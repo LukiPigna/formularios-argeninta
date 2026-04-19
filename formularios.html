@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularios de Gestión de Fondos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+        }
+        .tab-btn {
+            padding: 15px 30px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        .tab-btn:hover {
+            color: #667eea;
+            background: #f5f5f5;
+        }
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        h3 {
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        .required {
+            color: #e74c3c;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        input[readonly] {
+            background: #f8f9fa;
+            border-color: #e0e0e0;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 500;
+        }
+        td {
+            border: 1px solid #e0e0e0;
+            padding: 8px;
+        }
+        table input {
+            width: 95%;
+        }
+        .calc-row {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .positive {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        .negative {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        .file-upload {
+            border: 2px dashed #667eea;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-upload:hover {
+            background: #f0f3ff;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+        .col {
+            flex: 1;
+        }
+        .info-box {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .alert-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            table {
+                font-size: 12px;
+            }
+            table input {
+                width: 90%;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1>Formularios de Gestión de Fondos</h1>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <span id="user-info" style="color: #666; font-size: 14px;"></span>
+                <button onclick="logout()" style="background: #6c757d; color: white; padding: 8px 16px; border: none; border-radius: 20px; cursor: pointer; font-size: 13px;">Cerrar sesión</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('anticipos')">Solicitudes de Anticipo</button>
+            <button class="tab-btn" onclick="showTab('reintegros')">Reintegros de Gastos</button>
+            <button class="tab-btn" onclick="showTab('compras')">Solicitudes de Compras</button>
+        </div>
+
+        <div id="anticipos" class="tab active">
+            <h2>Solicitud de Anticipo de Fondos/Viáticos</h2>
+
+            <h3>Datos Generales</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Código de Proyecto <span class="required">*</span></label>
+                        <select id="cod_proyecto" onchange="autocompletarProyecto()">
+                            <option value="">Seleccionar proyecto...</option>
+                            <option value="PROY001">PROY001 - Proyecto de Investigación A</option>
+                            <option value="PROY002">PROY002 - Proyecto Desarrollo B</option>
+                            <option value="PROY003">PROY003 - Proyecto Extensión C</option>
+                            <option value="PROY004">PROY004 - Proyecto Capacitación D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Fuente de Financiamiento</label>
+                        <input type="text" id="fuente_financiamiento" readonly placeholder="Se autocompleta">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Institución <span class="required">*</span></label>
+                <input type="text" id="institucion" placeholder="Nombre de la institución">
+            </div>
+
+            <div class="form-group">
+                <label>Descripción de la Actividad <span class="required">*</span></label>
+                <textarea id="descripcion_actividad" placeholder="Describa la actividad a desarrollar..."></textarea>
+            </div>
+
+            <h3>Datos del Beneficiario</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Beneficiario <span class="required">*</span></label>
+                        <input type="text" id="beneficiario" placeholder="Nombre completo">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>CUIT/CUIL <span class="required">*</span></label>
+                        <input type="text" id="cuit" placeholder="XX-XXXXXXXX-X">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email <span class="required">*</span></label>
+                <input type="email" id="email" placeholder="correo@ejemplo.com">
+            </div>
+
+            <h3>Detalle del Anticipo Solicitado</h3>
+            <table id="tabla_anticipo">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Partida</th>
+                    <th>Actividad</th>
+                    <th>Importe Pesos</th>
+                    <th>Importe USD/Euros</th>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto del gasto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto del gasto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto del gasto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                </tr>
+            </table>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>TOTAL Anticipo Pesos:</label>
+                        <input type="number" id="total_pesos_anticipo" readonly value="0.00">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>TOTAL Anticipo USD/Euros:</label>
+                        <input type="number" id="total_usd_anticipo" readonly value="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Rendición de Anticipo</h3>
+            <table id="tabla_rendicion">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Partida</th>
+                    <th>Actividad</th>
+                    <th>Importe Pesos</th>
+                    <th>Importe USD/Euros</th>
+                    <th>Otra Moneda</th>
+                    <th>N° Comprobante</th>
+                    <th>Fecha</th>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="N°"></td>
+                    <td><input type="date"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="N°"></td>
+                    <td><input type="date"></td>
+                </tr>
+            </table>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Monto Rendido Pesos:</label>
+                        <input type="number" id="monto_rendido_pesos" readonly value="0.00">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Monto Rendido USD/Euros:</label>
+                        <input type="number" id="monto_rendido_usd" readonly value="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert-box">
+                <strong>Comparación Anticipo vs Rendición:</strong>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Complemento a pagar:</label>
+                        <input type="number" id="complemento_pesos" readonly value="0.00" class="positive">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Devolución solicitada:</label>
+                        <input type="number" id="devolucion_pesos" readonly value="0.00" class="negative">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Viáticos (Solo completar si corresponde)</h3>
+            <div class="info-box">
+                Complete esta sección solo para solicitudes de viáticos de viaje.
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Origen:</label>
+                        <input type="text" id="origen" placeholder="Ciudad de origen">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Destino:</label>
+                        <input type="text" id="destino" placeholder="Ciudad de destino">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Valor Diario Pesos:</label>
+                        <input type="number" id="valor_diario_pesos" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Cantidad de Días:</label>
+                        <input type="number" id="cantidad_dias_anticipo" placeholder="0">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Liquidación de Viáticos Pesos:</label>
+                <input type="number" id="liquidacion_viaticos" readonly value="0.00">
+            </div>
+            <div class="form-group">
+                <label>Medio de Transporte:</label>
+                <input type="text" id="medio_transporte" placeholder="Avión, Auto, Bus, etc.">
+            </div>
+
+            <h3>Documentación Requerida</h3>
+            <div class="file-upload">
+                <label>Constancia de Datos Bancarios:</label>
+                <input type="file" id="constancia_bancaria" accept=".pdf,.jpg,.jpeg,.png">
+                <small>Formatos: PDF, JPG, PNG</small>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="calcularAnticipos()">Calcular Totales</button>
+                <button class="btn btn-secondary" onclick="limpiarFormulario('anticipos')">Limpiar Formulario</button>
+                <button class="btn" onclick="enviarFormulario('anticipos')">Enviar Solicitud</button>
+            </div>
+        </div>
+
+        <div id="reintegros" class="tab">
+            <h2>Reintegro de Gastos/Viáticos</h2>
+
+            <h3>Datos Generales</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Código de Proyecto <span class="required">*</span></label>
+                        <select id="cod_proyecto_reintegro" onchange="autocompletarProyectoReintegro()">
+                            <option value="">Seleccionar proyecto...</option>
+                            <option value="PROY001">PROY001 - Proyecto de Investigación A</option>
+                            <option value="PROY002">PROY002 - Proyecto Desarrollo B</option>
+                            <option value="PROY003">PROY003 - Proyecto Extensión C</option>
+                            <option value="PROY004">PROY004 - Proyecto Capacitación D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Fuente de Financiamiento</label>
+                        <input type="text" id="fuente_financiamiento_reintegro" readonly placeholder="Se autocompleta">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Institución <span class="required">*</span></label>
+                <input type="text" id="institucion_reintegro" placeholder="Nombre de la institución">
+            </div>
+
+            <div class="form-group">
+                <label>Descripción de la Actividad <span class="required">*</span></label>
+                <textarea id="descripcion_actividad_reintegro" placeholder="Describa la actividad realizada..."></textarea>
+            </div>
+
+            <h3>Datos del Beneficiario</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Beneficiario <span class="required">*</span></label>
+                        <input type="text" id="beneficiario_reintegro" placeholder="Nombre completo">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>CUIT/CUIL <span class="required">*</span></label>
+                        <input type="text" id="cuit_reintegro" placeholder="XX-XXXXXXXX-X">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email <span class="required">*</span></label>
+                <input type="email" id="email_reintegro" placeholder="correo@ejemplo.com">
+            </div>
+
+            <h3>Detalle de Gastos a Reintegrar</h3>
+            <table id="tabla_gastos">
+                <tr>
+                    <th>Concepto</th>
+                    <th>Partida</th>
+                    <th>Actividad</th>
+                    <th>Importe Pesos</th>
+                    <th>Importe USD/Euros</th>
+                    <th>Otra Moneda</th>
+                    <th>N° Comprobante</th>
+                    <th>Fecha</th>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto del gasto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="N°"></td>
+                    <td><input type="date"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto del gasto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="N°"></td>
+                    <td><input type="date"></td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="Concepto del gasto"></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="N°"></td>
+                    <td><input type="date"></td>
+                </tr>
+            </table>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>TOTAL a Reintegrar Pesos:</label>
+                        <input type="number" id="total_reintegrar_pesos" readonly value="0.00" class="positive">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>TOTAL a Reintegrar USD/Euros:</label>
+                        <input type="number" id="total_reintegrar_usd" readonly value="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Viáticos (Solo completar si corresponde)</h3>
+            <div class="info-box">
+                Complete esta sección solo para reintegros de viáticos de viaje.
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Origen:</label>
+                        <input type="text" id="origen_reintegro" placeholder="Ciudad de origen">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Destino:</label>
+                        <input type="text" id="destino_reintegro" placeholder="Ciudad de destino">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Fecha Origen:</label>
+                        <input type="date" id="fecha_origen">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Fecha Finalización:</label>
+                        <input type="date" id="fecha_fin">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Hora Origen:</label>
+                        <input type="time" id="hora_origen">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Hora Finalización:</label>
+                        <input type="time" id="hora_fin">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Valor Diario Pesos:</label>
+                        <input type="number" id="valor_diario_pesos_reintegro" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Cantidad de Días:</label>
+                        <input type="number" id="cantidad_dias_reintegro" placeholder="0">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Liquidación de Viáticos Pesos:</label>
+                <input type="number" id="liquidacion_reintegro" readonly value="0.00">
+            </div>
+            <div class="form-group">
+                <label>Medio de Transporte:</label>
+                <input type="text" id="medio_transporte_reintegro" placeholder="Avión, Auto, Bus, etc.">
+            </div>
+            <div class="form-group">
+                <label>Moneda de Pago:</label>
+                <select id="moneda_pago">
+                    <option value="ARS">Pesos Argentinos</option>
+                    <option value="USD">Dólares Estadounidenses</option>
+                    <option value="EUR">Euros</option>
+                </select>
+            </div>
+
+            <h3>Documentación Requerida</h3>
+            <div class="file-upload">
+                <label>Constancia de Datos Bancarios:</label>
+                <input type="file" id="constancia_bancaria_reintegro" accept=".pdf,.jpg,.jpeg,.png">
+                <small>Formatos: PDF, JPG, PNG</small>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="calcularReintegros()">Calcular Totales</button>
+                <button class="btn btn-secondary" onclick="limpiarFormulario('reintegros')">Limpiar Formulario</button>
+                <button class="btn" onclick="enviarFormulario('reintegros')">Enviar Solicitud</button>
+            </div>
+        </div>
+
+        <div id="compras" class="tab">
+            <h2>Solicitud de Compras</h2>
+
+            <h3>Informacion General del Proyecto</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Codigo de Proyecto <span class="required">*</span></label>
+                        <select id="cod_proyecto_compras" onchange="autocompletarProyectoCompras()">
+                            <option value="">Seleccionar proyecto...</option>
+                            <option value="PROY001">PROY001 - Proyecto de Investigacion A</option>
+                            <option value="PROY002">PROY002 - Proyecto Desarrollo B</option>
+                            <option value="PROY003">PROY003 - Proyecto Extension C</option>
+                            <option value="PROY004">PROY004 - Proyecto Capacitacion D</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Fuente de Financiamiento <span class="required">*</span></label>
+                        <select id="fuente_financiamiento_compras">
+                            <option value="">Seleccionar fuente...</option>
+                            <option value="USDA">USDA</option>
+                            <option value="FONCYT">FONCYT</option>
+                            <option value="FONTAGRO">FONTAGRO</option>
+                            <option value="HORIZONTE">Horizonte 2020</option>
+                            <option value="OTROS">Otros</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Institucion afectada por el gasto <span class="required">*</span></label>
+                <input type="text" id="institucion_compras" placeholder="Nombre de la institucion">
+            </div>
+
+            <div class="form-group">
+                <label>Descripcion de la actividad a desarrollar <span class="required">*</span></label>
+                <textarea id="descripcion_actividad_compras" placeholder="Describa la actividad a desarrollar..."></textarea>
+            </div>
+
+            <h3>Datos del Solicitante</h3>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Nombre del solicitante <span class="required">*</span></label>
+                        <input type="text" id="nombre_solicitante" placeholder="Nombre completo">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Mail del solicitante <span class="required">*</span></label>
+                        <input type="email" id="email_solicitante" placeholder="correo@ejemplo.com">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Celular del solicitante:</label>
+                <input type="text" id="celular_solicitante" placeholder="+54 9 11 1234-5678">
+            </div>
+            <div class="form-group">
+                <label>Fecha de solicitud <span class="required">*</span></label>
+                <input type="date" id="fecha_solicitud" required>
+            </div>
+
+            <h3>Detalle de Bienes, Materiales e Insumos</h3>
+            <table id="tabla_bienes">
+                <tr>
+                    <th>N°</th>
+                    <th>Partida</th>
+                    <th>Actividad</th>
+                    <th>Descripcion / Especificaciones Tecnicas</th>
+                    <th>Cantidad</th>
+                    <th>Importe x Unidad</th>
+                    <th>Estimado TOTAL Pesos</th>
+                    <th>Estimado TOTAL Moneda Extranjera</th>
+                    <th>Especificar Moneda</th>
+                    <th>Lugar de Entrega</th>
+                    <th>Persona Contacto</th>
+                    <th>Observaciones</th>
+                </tr>
+                <tr>
+                    <td><input type="number" value="1" readonly></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="text" placeholder="Descripcion y especificaciones"></td>
+                    <td><input type="number" placeholder="0" onchange="calcularBienes()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" onchange="calcularBienes()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" readonly></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="USD/EUR/OTRA"></td>
+                    <td><input type="text" placeholder="Lugar de entrega"></td>
+                    <td><input type="text" placeholder="Persona contacto"></td>
+                    <td><input type="text" placeholder="Observaciones"></td>
+                </tr>
+                <tr>
+                    <td><input type="number" value="2" readonly></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="text" placeholder="Descripcion y especificaciones"></td>
+                    <td><input type="number" placeholder="0" onchange="calcularBienes()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" onchange="calcularBienes()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" readonly></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="USD/EUR/OTRA"></td>
+                    <td><input type="text" placeholder="Lugar de entrega"></td>
+                    <td><input type="text" placeholder="Persona contacto"></td>
+                    <td><input type="text" placeholder="Observaciones"></td>
+                </tr>
+                <tr>
+                    <td><input type="number" value="3" readonly></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="text" placeholder="Descripcion y especificaciones"></td>
+                    <td><input type="number" placeholder="0" onchange="calcularBienes()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" onchange="calcularBienes()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" readonly></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="USD/EUR/OTRA"></td>
+                    <td><input type="text" placeholder="Lugar de entrega"></td>
+                    <td><input type="text" placeholder="Persona contacto"></td>
+                    <td><input type="text" placeholder="Observaciones"></td>
+                </tr>
+            </table>
+            <div class="form-group">
+                <label>ESTIMADO TOTAL Bienes/Materiales:</label>
+                <input type="number" id="total_bienes" readonly value="0.00" class="positive">
+            </div>
+
+            <h3>Proveedores Sugeridos (Bienes y Materiales)</h3>
+            <div class="info-box">
+                Proveedores sugeridos para la compra de bienes y materiales
+            </div>
+            <div class="form-group">
+                <label>Proveedor Sugerido 1 - Nombre:</label>
+                <input type="text" id="prov_bien_1_nombre" placeholder="Nombre del proveedor">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>CUIT:</label>
+                        <input type="text" id="prov_bien_1_cuit" placeholder="XX-XXXXXXXX-X">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" id="prov_bien_1_tel" placeholder="+54 11 1234-5678">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="prov_bien_1_email" placeholder="correo@proveedor.com">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Proveedor Sugerido 2 - Nombre:</label>
+                <input type="text" id="prov_bien_2_nombre" placeholder="Nombre del proveedor">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>CUIT:</label>
+                        <input type="text" id="prov_bien_2_cuit" placeholder="XX-XXXXXXXX-X">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" id="prov_bien_2_tel" placeholder="+54 11 1234-5678">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="prov_bien_2_email" placeholder="correo@proveedor.com">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Proveedor Sugerido 3 - Nombre:</label>
+                <input type="text" id="prov_bien_3_nombre" placeholder="Nombre del proveedor">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>CUIT:</label>
+                        <input type="text" id="prov_bien_3_cuit" placeholder="XX-XXXXXXXX-X">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" id="prov_bien_3_tel" placeholder="+54 11 1234-5678">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="prov_bien_3_email" placeholder="correo@proveedor.com">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Detalle de Servicios y Consultorias</h3>
+            <table id="tabla_servicios">
+                <tr>
+                    <th>N°</th>
+                    <th>Partida</th>
+                    <th>Actividad</th>
+                    <th>Descripcion del Servicio a Contratar</th>
+                    <th>Duracion</th>
+                    <th>Cantidad de Pagos / Valor</th>
+                    <th>Estimado TOTAL Pesos</th>
+                    <th>Estimado TOTAL Moneda Extranjera</th>
+                    <th>Especificar Moneda</th>
+                    <th>Condicion de Pago - Entregables</th>
+                    <th>Persona que Aprueba</th>
+                    <th>Observaciones</th>
+                </tr>
+                <tr>
+                    <td><input type="number" value="1" readonly></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="text" placeholder="Descripcion del servicio"></td>
+                    <td><input type="text" placeholder="Duracion (ej: 3 meses)"></td>
+                    <td><input type="text" placeholder="Cantidad pagos / valor cada uno"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" onchange="calcularServicios()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="USD/EUR/OTRA"></td>
+                    <td><input type="text" placeholder="Condicion de pago y entregables"></td>
+                    <td><input type="text" placeholder="Persona que aprueba"></td>
+                    <td><input type="text" placeholder="Observaciones"></td>
+                </tr>
+                <tr>
+                    <td><input type="number" value="2" readonly></td>
+                    <td><input type="text" placeholder="Partida"></td>
+                    <td><input type="text" placeholder="Actividad"></td>
+                    <td><input type="text" placeholder="Descripcion del servicio"></td>
+                    <td><input type="text" placeholder="Duracion (ej: 6 meses)"></td>
+                    <td><input type="text" placeholder="Cantidad pagos / valor cada uno"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01" onchange="calcularServicios()"></td>
+                    <td><input type="number" placeholder="0.00" step="0.01"></td>
+                    <td><input type="text" placeholder="USD/EUR/OTRA"></td>
+                    <td><input type="text" placeholder="Condicion de pago y entregables"></td>
+                    <td><input type="text" placeholder="Persona que aprueba"></td>
+                    <td><input type="text" placeholder="Observaciones"></td>
+                </tr>
+            </table>
+            <div class="form-group">
+                <label>ESTIMADO TOTAL Servicios/Consultorias:</label>
+                <input type="number" id="total_servicios" readonly value="0.00" class="positive">
+            </div>
+
+            <h3>Proveedores Sugeridos (Servicios y Consultorias)</h3>
+            <div class="info-box">
+                Proveedores sugeridos para la contratacion de servicios y consultorias
+            </div>
+            <div class="form-group">
+                <label>Proveedor Sugerido 1 - Nombre:</label>
+                <input type="text" id="prov_serv_1_nombre" placeholder="Nombre del proveedor">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" id="prov_serv_1_tel" placeholder="+54 11 1234-5678">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="prov_serv_1_email" placeholder="correo@proveedor.com">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Adjunta Cotizacion?</label>
+                        <select id="prov_serv_1_cotizacion">
+                            <option value="">Seleccionar...</option>
+                            <option value="si">Si</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Proveedor Sugerido 2 - Nombre:</label>
+                <input type="text" id="prov_serv_2_nombre" placeholder="Nombre del proveedor">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" id="prov_serv_2_tel" placeholder="+54 11 1234-5678">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="prov_serv_2_email" placeholder="correo@proveedor.com">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Adjunta Cotizacion?</label>
+                        <select id="prov_serv_2_cotizacion">
+                            <option value="">Seleccionar...</option>
+                            <option value="si">Si</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Proveedor Sugerido 3 - Nombre:</label>
+                <input type="text" id="prov_serv_3_nombre" placeholder="Nombre del proveedor">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Telefono:</label>
+                        <input type="text" id="prov_serv_3_tel" placeholder="+54 11 1234-5678">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="prov_serv_3_email" placeholder="correo@proveedor.com">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Adjunta Cotizacion?</label>
+                        <select id="prov_serv_3_cotizacion">
+                            <option value="">Seleccionar...</option>
+                            <option value="si">Si</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Resumen y Totales</h3>
+            <div class="alert-box">
+                <strong>Resumen de la Solicitud:</strong>
+            </div>
+            <div class="form-group">
+                <label>Monto Estimado Total <span class="required">*</span></label>
+                <input type="number" id="monto_total_estimado" readonly value="0.00" class="positive">
+            </div>
+            <div class="form-group">
+                <label>Tipo de Compra (segun monto):</label>
+                <input type="text" id="tipo_compra" readonly placeholder="Se calcula automaticamente">
+            </div>
+            <div class="info-box">
+                Regimen Jurisdiccional por monto:
+                - Compra Menor: hasta $3,500,000
+                - Compra Directa: $3,500,001 a $54,000,000
+                - Concurso de Precios: $54,000,001 a $100,000,000
+                - Licitacion Privada: $100,000,001 a $270,000,000
+                - Licitacion Publica: mas de $270,000,000
+            </div>
+
+            <h3>Documentacion Requerida</h3>
+            <div class="file-upload">
+                <label>DNI/Pasaporte del solicitante <span class="required">*</span></label>
+                <input type="file" id="dni_solicitante" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <div class="file-upload">
+                <label>Copia DNI/Pasaporte <span class="required">*</span></label>
+                <input type="file" id="copia_dni" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <div class="file-upload">
+                <label>Cotizacion Proveedor 1 <span class="required">*</span></label>
+                <input type="file" id="cotizacion_1" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <div class="file-upload">
+                <label>Cotizacion Proveedor 2 <span class="required">*</span></label>
+                <input type="file" id="cotizacion_2" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+            <div class="file-upload">
+                <label>Cotizacion Proveedor 3 (opcional):</label>
+                <input type="file" id="cotizacion_3" accept=".pdf,.jpg,.jpeg,.png">
+            </div>
+
+            <div style="margin-top: 30px;">
+                <button class="btn" onclick="calcularCompras()">Calcular Totales</button>
+                <button class="btn btn-secondary" onclick="limpiarFormulario('compras')">Limpiar Formulario</button>
+                <button class="btn" onclick="enviarFormulario('compras')">Enviar Solicitud</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Importar Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Verificar autenticación (función unificada)
+        function checkAuthentication() {
+            // Primero verificar localStorage (login simple)
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const user = JSON.parse(currentUser);
+                const userInfo = document.getElementById('user-info');
+                if (userInfo) {
+                    userInfo.textContent = `Hola, ${user.displayName}`;
+                }
+                console.log('Usuario autenticado desde localStorage:', user.email);
+                return true;
+            }
+
+            // Si no hay localStorage, intentar Firebase
+            try {
+                const firebaseConfig = {
+                    projectId: "formularios-unit-fondos",
+                    appId: "1:139373040555:web:6dcc2873498131c2bf38ee",
+                    storageBucket: "formularios-unit-fondos.firebasestorage.app",
+                    apiKey: "AIzaSyBMUwmOW1D67shpSu-jeFpssempkH7BWI0",
+                    authDomain: "formularios-unit-fondos.firebaseapp.com",
+                    messagingSenderId: "139373040555",
+                    projectNumber: "139373040555"
+                };
+
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+
+                // Verificar autenticación con Firebase
+                onAuthStateChanged(auth, (user) => {
+                    if (!user) {
+                        console.log('Usuario no autenticado en Firebase, redirigiendo al login');
+                        window.location.href = 'login-simple.html';
+                    } else {
+                        console.log('Usuario autenticado con Firebase:', user.email);
+                        const userInfo = document.getElementById('user-info');
+                        if (userInfo) {
+                            userInfo.textContent = `Hola, ${user.displayName}`;
+                        }
+
+                        // Guardar en localStorage para persistencia
+                        localStorage.setItem('currentUser', JSON.stringify({
+                            displayName: user.displayName,
+                            email: user.email,
+                            photoURL: user.photoURL,
+                            uid: user.uid
+                        }));
+                    }
+                });
+
+                // Hacer auth disponible globalmente para logout
+                window.auth = auth;
+
+            } catch (error) {
+                console.error('Error al inicializar Firebase:', error);
+                // Si Firebase falla y no hay localStorage, redirigir al login simple
+                window.location.href = 'login-simple.html';
+            }
+
+            return false;
+        }
+
+        // Ejecutar verificación de autenticación
+        checkAuthentication();
+
+        // Función para cerrar sesión
+        window.logout = function() {
+            localStorage.removeItem('currentUser');
+
+            if (window.auth) {
+                signOut(window.auth).then(() => {
+                    window.location.href = 'login-simple.html';
+                }).catch((error) => {
+                    console.error('Error al cerrar sesión:', error);
+                    window.location.href = 'login-simple.html';
+                });
+            } else {
+                window.location.href = 'login-simple.html';
+            }
+        };
+
+        // Datos de ejemplo para autocompletado
+        const proyectos = {
+            'PROY001': 'Fondos Nacionales de Ciencia y Técnica',
+            'PROY002': 'Agencia Nacional de Promoción Científica',
+            'PROY003': 'Secretaría de Políticas Universitarias',
+            'PROY004': 'Consejo Nacional de Investigaciones'
+        };
+
+        function showTab(id) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function autocompletarProyecto() {
+            const select = document.getElementById('cod_proyecto');
+            const input = document.getElementById('fuente_financiamiento');
+            if (proyectos[select.value]) {
+                input.value = proyectos[select.value];
+            } else {
+                input.value = '';
+            }
+        }
+
+        function autocompletarProyectoReintegro() {
+            const select = document.getElementById('cod_proyecto_reintegro');
+            const input = document.getElementById('fuente_financiamiento_reintegro');
+            if (proyectos[select.value]) {
+                input.value = proyectos[select.value];
+            } else {
+                input.value = '';
+            }
+        }
+
+        function autocompletarProyectoCompras() {
+            // Funcion para autocompletar datos del proyecto de compras
+            const select = document.getElementById('cod_proyecto_compras');
+            if (select.value) {
+                // Aqui se puede agregar logica adicional si es necesaria
+                console.log('Proyecto seleccionado:', select.value);
+            }
+        }
+
+        function calcularAnticipos() {
+            // Calcular totales de anticipo
+            let totalPesos = 0;
+            let totalUSD = 0;
+            document.querySelectorAll('#tabla_anticipo input[type="number"]').forEach(inp => {
+                if (inp.type === 'number') {
+                    const valor = parseFloat(inp.value) || 0;
+                    const col = inp.parentElement.cellIndex;
+                    if (col === 3) totalPesos += valor;
+                    if (col === 4) totalUSD += valor;
+                }
+            });
+
+            document.getElementById('total_pesos_anticipo').value = totalPesos.toFixed(2);
+            document.getElementById('total_usd_anticipo').value = totalUSD.toFixed(2);
+
+            // Calcular montos rendidos
+            let rendidoPesos = 0;
+            let rendidoUSD = 0;
+            document.querySelectorAll('#tabla_rendicion input[type="number"]').forEach(inp => {
+                const valor = parseFloat(inp.value) || 0;
+                const col = inp.parentElement.cellIndex;
+                if (col === 3) rendidoPesos += valor;
+                if (col === 4) rendidoUSD += valor;
+            });
+
+            document.getElementById('monto_rendido_pesos').value = rendidoPesos.toFixed(2);
+            document.getElementById('monto_rendido_usd').value = rendidoUSD.toFixed(2);
+
+            // Calcular complemento o devolución
+            const diferencia = rendidoPesos - totalPesos;
+            if (diferencia > 0) {
+                document.getElementById('complemento_pesos').value = diferencia.toFixed(2);
+                document.getElementById('devolucion_pesos').value = '0.00';
+            } else {
+                document.getElementById('complemento_pesos').value = '0.00';
+                document.getElementById('devolucion_pesos').value = Math.abs(diferencia).toFixed(2);
+            }
+
+            // Calcular viáticos
+            const valorDia = parseFloat(document.getElementById('valor_diario_pesos').value) || 0;
+            const dias = parseFloat(document.getElementById('cantidad_dias_anticipo').value) || 0;
+            document.getElementById('liquidacion_viaticos').value = (valorDia * dias).toFixed(2);
+
+            alert('Cálculos actualizados correctamente');
+        }
+
+        function calcularReintegros() {
+            // Calcular totales a reintegrar
+            let totalPesos = 0;
+            let totalUSD = 0;
+            document.querySelectorAll('#tabla_gastos input[type="number"]').forEach(inp => {
+                const valor = parseFloat(inp.value) || 0;
+                const col = inp.parentElement.cellIndex;
+                if (col === 3) totalPesos += valor;
+                if (col === 4) totalUSD += valor;
+            });
+
+            document.getElementById('total_reintegrar_pesos').value = totalPesos.toFixed(2);
+            document.getElementById('total_reintegrar_usd').value = totalUSD.toFixed(2);
+
+            // Calcular viáticos
+            const valorDia = parseFloat(document.getElementById('valor_diario_pesos_reintegro').value) || 0;
+            const dias = parseFloat(document.getElementById('cantidad_dias_reintegro').value) || 0;
+            document.getElementById('liquidacion_reintegro').value = (valorDia * dias).toFixed(2);
+
+            alert('Cálculos actualizados correctamente');
+        }
+
+        function limpiarFormulario(formulario) {
+            if (!confirm('¿Está seguro de que desea limpiar todos los campos del formulario?')) {
+                return;
+            }
+
+            const formElement = document.getElementById(formulario);
+            formElement.querySelectorAll('input:not([readonly]), textarea, select').forEach(el => {
+                if (el.type === 'file') {
+                    el.value = '';
+                } else if (el.tagName === 'SELECT') {
+                    el.selectedIndex = 0;
+                } else {
+                    el.value = '';
+                }
+            });
+
+            formElement.querySelectorAll('input[readonly]').forEach(el => {
+                el.value = '0.00';
+            });
+
+            alert('Formulario limpiado correctamente');
+        }
+
+        function calcularBienes() {
+            let total = 0;
+            const rows = document.querySelectorAll('#tabla_bienes tr:not(:first-child)');
+            rows.forEach((row, index) => {
+                const cantidad = parseFloat(row.querySelector('td:nth-child(5) input').value) || 0;
+                const precioUnitario = parseFloat(row.querySelector('td:nth-child(6) input').value) || 0;
+                const totalItem = cantidad * precioUnitario;
+                row.querySelector('td:nth-child(7) input').value = totalItem.toFixed(2);
+                total += totalItem;
+            });
+            document.getElementById('total_bienes').value = total.toFixed(2);
+            calcularMontoTotal();
+        }
+
+        function calcularServicios() {
+            let total = 0;
+            const rows = document.querySelectorAll('#tabla_servicios tr:not(:first-child)');
+            rows.forEach(row => {
+                const totalItem = parseFloat(row.querySelector('td:nth-child(7) input').value) || 0;
+                total += totalItem;
+            });
+            document.getElementById('total_servicios').value = total.toFixed(2);
+            calcularMontoTotal();
+        }
+
+        function calcularMontoTotal() {
+            const totalBienes = parseFloat(document.getElementById('total_bienes').value) || 0;
+            const totalServicios = parseFloat(document.getElementById('total_servicios').value) || 0;
+            const montoTotal = totalBienes + totalServicios;
+            document.getElementById('monto_total_estimado').value = montoTotal.toFixed(2);
+
+            // Determinar tipo de compra segun monto
+            let tipoCompra = '';
+            if (montoTotal <= 3500000) {
+                tipoCompra = 'Compra Menor';
+            } else if (montoTotal <= 54000000) {
+                tipoCompra = 'Compra Directa';
+            } else if (montoTotal <= 100000000) {
+                tipoCompra = 'Concurso de Precios';
+            } else if (montoTotal <= 270000000) {
+                tipoCompra = 'Licitacion Privada';
+            } else {
+                tipoCompra = 'Licitacion Publica';
+            }
+            document.getElementById('tipo_compra').value = tipoCompra;
+        }
+
+        function calcularCompras() {
+            calcularBienes();
+            calcularServicios();
+            alert('Calculos actualizados correctamente. Tipo de compra: ' + document.getElementById('tipo_compra').value);
+        }
+
+        function enviarFormulario(formulario) {
+            const webhookUrl = 'http://localhost:5678/webhook-test/formularios';
+
+            let datos = {
+                tipo_formulario: formulario
+            };
+
+            if (formulario === 'anticipos') {
+                datos.datos_generales = {
+                    codigo_proyecto: document.getElementById('cod_proyecto').value,
+                    fuente_financiamiento: document.getElementById('fuente_financiamiento').value,
+                    institucion: document.getElementById('institucion').value,
+                    descripcion_actividad: document.getElementById('descripcion_actividad').value,
+                    beneficiario: document.getElementById('beneficiario').value,
+                    cuit: document.getElementById('cuit').value,
+                    email: document.getElementById('email').value
+                };
+            } else if (formulario === 'reintegros') {
+                datos.datos_generales = {
+                    codigo_proyecto: document.getElementById('cod_proyecto_reintegro').value,
+                    fuente_financiamiento: document.getElementById('fuente_financiamiento_reintegro').value,
+                    institucion: document.getElementById('institucion_reintegro').value,
+                    descripcion_actividad: document.getElementById('descripcion_actividad_reintegro').value,
+                    beneficiario: document.getElementById('beneficiario_reintegro').value,
+                    cuit: document.getElementById('cuit_reintegro').value,
+                    email: document.getElementById('email_reintegro').value
+                };
+            } else if (formulario === 'compras') {
+                datos.datos_generales = {
+                    codigo_proyecto: document.getElementById('cod_proyecto_compras').value,
+                    fuente_financiamiento: document.getElementById('fuente_financiamiento_compras').value,
+                    institucion: document.getElementById('institucion_compras').value,
+                    descripcion_actividad: document.getElementById('descripcion_actividad_compras').value,
+                    nombre_solicitante: document.getElementById('nombre_solicitante').value,
+                    mail_solicitante: document.getElementById('email_solicitante').value,
+                    celular_solicitante: document.getElementById('celular_solicitante').value,
+                    fecha_solicitud: document.getElementById('fecha_solicitud').value
+                };
+
+                // Recolectar datos de bienes
+                const bienesRows = document.querySelectorAll('#tabla_bienes tr:not(:first-child)');
+                datos.detalle_bienes = [];
+                bienesRows.forEach((row, index) => {
+                    const item = {
+                        numero: index + 1,
+                        partida: row.querySelector('td:nth-child(2) input').value,
+                        actividad: row.querySelector('td:nth-child(3) input').value,
+                        descripcion: row.querySelector('td:nth-child(4) input').value,
+                        cantidad: row.querySelector('td:nth-child(5) input').value,
+                        importe_unidad: row.querySelector('td:nth-child(6) input').value,
+                        estimado_total_pesos: row.querySelector('td:nth-child(7) input').value,
+                        estimado_total_moneda_extranjera: row.querySelector('td:nth-child(8) input').value,
+                        especificar_moneda: row.querySelector('td:nth-child(9) input').value,
+                        lugar_entrega: row.querySelector('td:nth-child(10) input').value,
+                        persona_contacto: row.querySelector('td:nth-child(11) input').value,
+                        observaciones: row.querySelector('td:nth-child(12) input').value
+                    };
+                    if (item.descripcion || item.cantidad) {
+                        datos.detalle_bienes.push(item);
+                    }
+                });
+
+                // Recolectar proveedores de bienes
+                datos.proveedores_bienes = [];
+                for (let i = 1; i <= 3; i++) {
+                    const proveedor = {
+                        nombre: document.getElementById('prov_bien_' + i + '_nombre').value,
+                        cuit: document.getElementById('prov_bien_' + i + '_cuit').value,
+                        telefono: document.getElementById('prov_bien_' + i + '_tel').value,
+                        email: document.getElementById('prov_bien_' + i + '_email').value
+                    };
+                    if (proveedor.nombre || proveedor.email) {
+                        datos.proveedores_bienes.push(proveedor);
+                    }
+                }
+
+                // Recolectar datos de servicios
+                const serviciosRows = document.querySelectorAll('#tabla_servicios tr:not(:first-child)');
+                datos.detalle_servicios = [];
+                serviciosRows.forEach((row, index) => {
+                    const item = {
+                        numero: index + 1,
+                        partida: row.querySelector('td:nth-child(2) input').value,
+                        actividad: row.querySelector('td:nth-child(3) input').value,
+                        descripcion: row.querySelector('td:nth-child(4) input').value,
+                        duracion: row.querySelector('td:nth-child(5) input').value,
+                        cantidad_pagos: row.querySelector('td:nth-child(6) input').value,
+                        estimado_total_pesos: row.querySelector('td:nth-child(7) input').value,
+                        estimado_total_moneda_extranjera: row.querySelector('td:nth-child(8) input').value,
+                        especificar_moneda: row.querySelector('td:nth-child(9) input').value,
+                        condicion_pago: row.querySelector('td:nth-child(10) input').value,
+                        persona_aprueba: row.querySelector('td:nth-child(11) input').value,
+                        observaciones: row.querySelector('td:nth-child(12) input').value
+                    };
+                    if (item.descripcion || item.estimado_total_pesos) {
+                        datos.detalle_servicios.push(item);
+                    }
+                });
+
+                // Recolectar proveedores de servicios
+                datos.proveedores_servicios = [];
+                for (let i = 1; i <= 3; i++) {
+                    const proveedor = {
+                        nombre: document.getElementById('prov_serv_' + i + '_nombre').value,
+                        telefono: document.getElementById('prov_serv_' + i + '_tel').value,
+                        email: document.getElementById('prov_serv_' + i + '_email').value,
+                        cotizacion: document.getElementById('prov_serv_' + i + '_cotizacion').value
+                    };
+                    if (proveedor.nombre || proveedor.email) {
+                        datos.proveedores_servicios.push(proveedor);
+                    }
+                }
+
+                // Recolectar totales
+                datos.totales_compra = {
+                    total_bienes: document.getElementById('total_bienes').value,
+                    total_servicios: document.getElementById('total_servicios').value,
+                    monto_total_estimado: document.getElementById('monto_total_estimado').value,
+                    tipo_compra: document.getElementById('tipo_compra').value
+                };
+
+                // Recolectar documentos
+                datos.documentos = {
+                    dni_solicitante: document.getElementById('dni_solicitante').files[0]?.name,
+                    copia_dni: document.getElementById('copia_dni').files[0]?.name,
+                    cotizacion_1: document.getElementById('cotizacion_1').files[0]?.name,
+                    cotizacion_2: document.getElementById('cotizacion_2').files[0]?.name,
+                    cotizacion_3: document.getElementById('cotizacion_3').files[0]?.name
+                };
+            }
+
+            // Enviar a n8n
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(datos)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Formulario enviado correctamente.\n\nID de solicitud: ' + data.id_solicitud + '\nTipo: ' + data.tipo_formulario);
+                } else {
+                    alert('Error: ' + (data.message || 'Error desconocido'));
+                }
+            })
+            .catch(error => {
+                alert('Error al enviar formulario: ' + error.message + '\n\nVerifica que n8n esté ejecutándose y el webhook esté activo.');
+            });
+        }
+    </script>
+</body>
+</html>

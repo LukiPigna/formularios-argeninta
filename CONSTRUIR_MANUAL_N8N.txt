@@ -1,0 +1,368 @@
+================================================================================
+CONSTRUIR WORKFLOW MANUALMENTE EN N8N - MÁS FÁCIL QUE IMPORTAR
+================================================================================
+
+Esta es la forma MÁS SIMPLE de usar n8n con los formularios.
+No necesitas importar archivos JSON complejos.
+
+================================================================================
+PASO 1: CREAR WORKFLOW NUEVO
+================================================================================
+
+1. Inicia n8n: n8n
+2. Ve a http://localhost:5678
+3. Haz clic en "Workflows" arriba a la izquierda
+4. Haz clic en "+ New Workflow" (o el icono + arriba a la derecha)
+5. Te aparecerá un canvas vacío
+
+================================================================================
+PASO 2: AGREGAR NODOS MANUALMENTE
+================================================================================
+
+1. AGREGAR WEBHOOK (ENTRADA)
+-----------------------------
+- Haz clic en el icono "+" en el centro del canvas
+- Busca "Webhook"
+- Haz clic en "Add"
+- Selecciona el nodo Webhook que apareció
+- En el panel derecho:
+  * Cambia el nombre a: "Webhook Formularios"
+  * En "HTTP Method": selecciona "POST"
+  * En "Path": escribe "formularios"
+  * En "Authentication": deja "None"
+- Haz clic en "Listen for Test Event" (esto activa el webhook)
+- Verás una URL de prueba como: http://localhost:5678/webhook/formularios
+
+2. AGREGAR NODO SET (VALIDAR)
+-------------------------------
+- Haz clic en el icono "+" debajo del Webhook
+- Busca "Set"
+- Haz clic en "Add"
+- Conecta el Webhook al Set (arrastra desde el punto derecho del Webhook al punto izquierdo del Set)
+- En el panel derecho:
+  * Cambia el nombre a: "Validar Datos"
+  * En "Fields":
+    - Agrega un campo: Name = "tipo_formulario", Value = {{$json.tipo_formulario}}
+    - Agrega un campo: Name = "id_solicitud", Value = {{$now.toISO()}}
+    - Agrega un campo: Name = "fecha_procesamiento", Value = {{$now.format('DD/MM/YYYY HH:mm')}}
+    - Agrega un campo: Name = "estado", Value = "pendiente"
+
+3. AGREGAR NODO SWITCH (RUTA)
+-------------------------------
+- Haz clic en el icono "+" debajo del nodo "Validar Datos"
+- Busca "Switch"
+- Haz clic en "Add"
+- Conecta el nodo "Validar Datos" al Switch
+- En el panel derecho:
+  * Cambia el nombre a: "Tipo de Formulario"
+  * En "Rules":
+    - Rule 1:
+      * Condiciones: Left Value = {{$json.tipo_formulario}}, Operator = "Equal", Right Value = "anticipos"
+      * Output Name = "anticipos"
+    - Rule 2:
+      * Condiciones: Left Value = {{$json.tipo_formulario}}, Operator = "Equal", Right Value = "reintegros"
+      * Output Name = "reintegros"
+    - Rule 3:
+      * Condiciones: Left Value = {{$json.tipo_formulario}}, Operator = "Equal", Right Value = "compras"
+      * Output Name = "compras"
+
+4. AGREGAR NODO FUNCTION (PROCESAR)
+-----------------------------------
+- Haz clic en el icono "+" en la salida "anticipos" del Switch
+- Busca "Function"
+- Haz clic en "Add"
+- Conecta la salida "anticipos" del Switch al Function
+- En el panel derecho:
+  * Cambia el nombre a: "Procesar Anticipos"
+  * En "JavaScript Code", pega este código:
+
+```javascript
+const datos = items[0].json;
+
+const respuesta = {
+  tipo_formulario: datos.tipo_formulario,
+  id_solicitud: datos.id_solicitud,
+  fecha_procesamiento: datos.fecha_procesamiento,
+  estado: datos.estado,
+  mensaje: 'Formulario de anticipo recibido correctamente',
+  datos: datos
+};
+
+return [{ json: respuesta }];
+```
+
+5. AGREGAR NODO FUNCTION (REINTEGROS)
+---------------------------------------
+- Haz clic en el icono "+" en la salida "reintegros" del Switch
+- Busca "Function"
+- Haz clic en "Add"
+- Conecta la salida "reintegros" del Switch al Function
+- En el panel derecho:
+  * Cambia el nombre a: "Procesar Reintegros"
+  * En "JavaScript Code", pega este código:
+
+```javascript
+const datos = items[0].json;
+
+const respuesta = {
+  tipo_formulario: datos.tipo_formulario,
+  id_solicitud: datos.id_solicitud,
+  fecha_procesamiento: datos.fecha_procesamiento,
+  estado: datos.estado,
+  mensaje: 'Formulario de reintegro recibido correctamente',
+  datos: datos
+};
+
+return [{ json: respuesta }];
+```
+
+6. AGREGAR NODO FUNCTION (COMPRAS)
+------------------------------------
+- Haz clic en el icono "+" en la salida "compras" del Switch
+- Busca "Function"
+- Haz clic en "Add"
+- Conecta la salida "compras" del Switch al Function
+- En el panel derecho:
+  * Cambia el nombre a: "Procesar Compras"
+  * En "JavaScript Code", pega este código:
+
+```javascript
+const datos = items[0].json;
+
+const respuesta = {
+  tipo_formulario: datos.tipo_formulario,
+  id_solicitud: datos.id_solicitud,
+  fecha_procesamiento: datos.fecha_procesamiento,
+  estado: datos.estado,
+  mensaje: 'Formulario de compras recibido correctamente',
+  datos: datos
+};
+
+return [{ json: respuesta }];
+```
+
+7. AGREGAR NODO RESPONDER A WEBHOOK
+--------------------------------------
+- Haz clic en el icono "+" en la salida de cualquiera de los Function nodes
+- Busca "Respond to Webhook"
+- Haz clic en "Add"
+- Conecta las tres salidas de los Function nodes a este único nodo "Respond to Webhook"
+- En el panel derecho:
+  * Cambia el nombre a: "Responder Webhook"
+  * En "Respond With": selecciona "JSON"
+  * En "Response Body": pega esto:
+
+```json
+{
+  "status": "success",
+  "message": "Formulario recibido correctamente",
+  "id_solicitud": "{{$json.id_solicitud}}",
+  "tipo_formulario": "{{$json.tipo_formulario}}"
+}
+```
+
+================================================================================
+PASO 3: GUARDAR Y ACTIVAR WORKFLOW
+================================================================================
+
+1. Guardar el workflow:
+- Haz clic en "Save" arriba a la derecha (icono de disquete)
+- Asigna un nombre: "Formularios de Gestión de Fondos"
+
+2. Activar el workflow:
+- Haz clic en "Active" arriba a la derecha (el toggle se pondrá en verde)
+- Ahora el workflow está activo y recibiendo datos
+
+================================================================================
+PASO 4: PROBAR EL WORKFLOW
+================================================================================
+
+1. Probar con PowerShell:
+-----------------------
+```powershell
+$body = @{
+    tipo_formulario = "anticipos"
+    datos_generales = @{
+        codigo_proyecto = "PROY001"
+        fuente_financiamiento = "Fondos Nacionales"
+        institucion = "Universidad X"
+        descripcion_actividad = "Prueba de workflow"
+        beneficiario = "Juan Pérez"
+        cuit = "20-12345678-9"
+        email = "juan@example.com"
+    }
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:5678/webhook/formularios" -Method Post -Body $body -ContentType "application/json"
+```
+
+2. Probar con CMD (curl):
+---------------------------
+```cmd
+curl -X POST http://localhost:5678/webhook/formularios -H "Content-Type: application/json" -d "{\"tipo_formulario\":\"anticipos\",\"datos_generales\":{\"codigo_proyecto\":\"PROY001\",\"fuente_financiamiento\":\"Fondos Nacionales\",\"institucion\":\"Universidad X\",\"descripcion_actividad\":\"Prueba de workflow\",\"beneficiario\":\"Juan Pérez\",\"cuit\":\"20-12345678-9\",\"email\":\"juan@example.com\"}}"
+```
+
+3. Probar con Postman:
+----------------------
+- Método: POST
+- URL: http://localhost:5678/webhook/formularios
+- Headers:
+  * Content-Type: application/json
+- Body (raw JSON):
+```json
+{
+  "tipo_formulario": "anticipos",
+  "datos_generales": {
+    "codigo_proyecto": "PROY001",
+    "fuente_financiamiento": "Fondos Nacionales",
+    "institucion": "Universidad X",
+    "descripcion_actividad": "Prueba de workflow",
+    "beneficiario": "Juan Pérez",
+    "cuit": "20-12345678-9",
+    "email": "juan@example.com"
+  }
+}
+```
+
+================================================================================
+PASO 5: VER RESULTADOS
+================================================================================
+
+1. En n8n:
+- Ve a "Executions" en el menú izquierdo
+- Verás la ejecución de tu prueba
+- Haz clic en ella para ver los detalles
+- Haz clic en cada nodo para ver qué datos pasó por ellos
+
+2. Respuesta esperada:
+```json
+{
+  "status": "success",
+  "message": "Formulario recibido correctamente",
+  "id_solicitud": "2026-04-15T23:30:00.000Z",
+  "tipo_formulario": "anticipos"
+}
+```
+
+================================================================================
+MODIFICAR EL FORMULARIO HTML
+================================================================================
+
+1. Abre formularios.html
+2. Agrega esta función al final del script:
+
+```javascript
+function enviarFormulario(formulario) {
+    const webhookUrl = 'http://localhost:5678/webhook/formularios';
+
+    let datos = {
+        tipo_formulario: formulario
+    };
+
+    if (formulario === 'anticipos') {
+        datos.datos_generales = {
+            codigo_proyecto: document.getElementById('cod_proyecto').value,
+            fuente_financiamiento: document.getElementById('fuente_financiamiento').value,
+            institucion: document.getElementById('institucion').value,
+            descripcion_actividad: document.getElementById('descripcion_actividad').value,
+            beneficiario: document.getElementById('beneficiario').value,
+            cuit: document.getElementById('cuit').value,
+            email: document.getElementById('email').value
+        };
+    } else if (formulario === 'reintegros') {
+        datos.datos_generales = {
+            codigo_proyecto: document.getElementById('cod_proyecto_reintegro').value,
+            fuente_financiamiento: document.getElementById('fuente_financiamiento_reintegro').value,
+            institucion: document.getElementById('institucion_reintegro').value,
+            descripcion_actividad: document.getElementById('descripcion_actividad_reintegro').value,
+            beneficiario: document.getElementById('beneficiario_reintegro').value,
+            cuit: document.getElementById('cuit_reintegro').value,
+            email: document.getElementById('email_reintegro').value
+        };
+    } else if (formulario === 'compras') {
+        datos.datos_generales = {
+            codigo_proyecto: document.getElementById('cod_proyecto_compras').value,
+            fuente_financiamiento: document.getElementById('fuente_financiamiento_compras').value,
+            institucion: document.getElementById('institucion_compras').value,
+            descripcion_actividad: document.getElementById('descripcion_actividad_compras').value,
+            nombre_solicitante: document.getElementById('nombre_solicitante').value,
+            mail_solicitante: document.getElementById('email_solicitante').value,
+            celular_solicitante: document.getElementById('celular_solicitante').value,
+            fecha_solicitud: document.getElementById('fecha_solicitud').value
+        };
+    }
+
+    fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Formulario enviado correctamente. ID: ' + data.id_solicitud);
+    })
+    .catch(error => {
+        alert('Error al enviar: ' + error);
+    });
+}
+```
+
+3. Agrega botones de envío en cada formulario:
+
+En la sección "Solicitudes de Anticipo" (después de "Limpiar Formulario"):
+```html
+<button class="btn" onclick="enviarFormulario('anticipos')">Enviar Solicitud</button>
+```
+
+En la sección "Reintegros de Gastos" (después de "Limpiar Formulario"):
+```html
+<button class="btn" onclick="enviarFormulario('reintegros')">Enviar Solicitud</button>
+```
+
+En la sección "Solicitudes de Compras" (después de "Limpiar Formulario"):
+```html
+<button class="btn" onclick="enviarFormulario('compras')">Enviar Solicitud</button>
+```
+
+================================================================================
+AGREGAR MÁS NODOS (OPCIONAL)
+================================================================================
+
+Cuando el workflow básico funcione, puedes agregar más nodos:
+
+1. NODO "Write Binary File" para guardar datos en archivos
+2. NODO "Send Email" para enviar notificaciones
+3. Nodos "Spreadsheet File" o "CSV File" para generar archivos Excel/CSV
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Si el webhook no funciona:
+
+1. Verifica que el workflow esté activo (toggle en verde)
+2. Verifica la URL del webhook
+3. Prueba la URL en el navegador: http://localhost:5678/webhook/formularios
+   Debería mostrar algo o un error, pero no "page not found"
+4. Verifica que no haya firewall bloqueando el puerto 5678
+5. Verifica los logs en la terminal donde ejecutaste n8n
+
+================================================================================
+CONCLUSIÓN
+================================================================================
+
+Construir el workflow manualmente es MÁS FÁCIL que importar archivos JSON
+porque:
+
+1. No tienes problemas de compatibilidad de versiones
+2. Ves exactamente qué está configurando
+3. Puedes probar cada nodo individualmente
+4. Es más intuitivo y visual
+5. Puedes guardar el workflow en cualquier momento
+
+El workflow básico que acabas de crear ya es completamente funcional
+para recibir y procesar los formularios HTML.
+
+================================================================================

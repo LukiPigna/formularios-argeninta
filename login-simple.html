@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Simplificado - Formularios Gestión de Fondos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+        .logo-section {
+            margin-bottom: 30px;
+        }
+        .logo-section h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .logo-section p {
+            color: #666;
+            font-size: 14px;
+        }
+        .login-form {
+            margin-top: 30px;
+        }
+        .google-btn {
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .google-btn:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .info-text {
+            color: #666;
+            font-size: 13px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            display: none;
+        }
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            display: none;
+        }
+        .simple-login {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .simple-login h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .simple-login input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .simple-login button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .simple-login button:hover {
+            background: #5568d3;
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+        }
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        .divider span {
+            padding: 0 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <h1>Formularios Gestión de Fondos</h1>
+            <p>Sistema de gestión de fondos y solicitudes</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <div class="login-form">
+            <div id="loading" class="loading" style="display: none;">
+                <p>Iniciando sesión...</p>
+            </div>
+
+            <div id="login-buttons">
+                <button id="google-btn" class="google-btn" onclick="tryGoogleLogin()">
+                    <img src="https://www.google.com/favicon.ico" alt="Google" width="20" height="20">
+                    <span>Iniciar sesión con Google</span>
+                </button>
+
+                <div class="divider">
+                    <span>o</span>
+                </div>
+
+                <div class="simple-login">
+                    <h3>Inicio de sesión simplificado</h3>
+                    <input type="text" id="user-name" placeholder="Tu nombre" value="Usuario Demo">
+                    <input type="email" id="user-email" placeholder="Tu email" value="demo@ejemplo.com">
+                    <button onclick="simpleLogin()">Iniciar sesión</button>
+                    <p style="margin-top: 10px; font-size: 11px; color: #999;">
+                        Esta opción es para desarrollo. En producción usar Firebase.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-text">
+            <p>Para acceder al sistema de formularios, inicia sesión.</p>
+            <p style="margin-top: 10px; font-size: 12px; color: #999;">
+                Para configurar el login con Google, lee SOLUCION_ERROR_LOGIN.md
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Verificar si el usuario ya está autenticado
+        const currentUser = localStorage.getItem('currentUser');
+        if (currentUser) {
+            window.location.href = 'formularios_wizard.html';
+        }
+
+        // Login simplificado (sin Firebase)
+        function simpleLogin() {
+            const userName = document.getElementById('user-name').value;
+            const userEmail = document.getElementById('user-email').value;
+
+            if (!userName || !userEmail) {
+                showError('Por favor completa todos los campos');
+                return;
+            }
+
+            // Guardar información del usuario
+            const user = {
+                displayName: userName,
+                email: userEmail,
+                photoURL: null,
+                uid: 'demo-' + Date.now()
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(user));
+
+            showSuccess(`¡Bienvenido, ${userName}!`);
+
+            setTimeout(() => {
+                window.location.href = 'formularios_wizard.html';
+            }, 1500);
+        }
+
+        // Intentar login con Google (puede fallar sin configuración)
+        function tryGoogleLogin() {
+            showError('Para usar Google Sign-In, primero debes configurar los dominios en Firebase Console. Lee SOLUCION_ERROR_LOGIN.md');
+        }
+
+        // Funciones de utilidad
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        // Función para cerrar sesión (disponible globalmente)
+        window.logout = function() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login-simple.html';
+        };
+    </script>
+</body>
+</html>

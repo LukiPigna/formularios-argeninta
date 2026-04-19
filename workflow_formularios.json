@@ -1,0 +1,293 @@
+{
+  "name": "Formularios de Gestión de Fondos y Compras",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "formularios",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-1",
+      "name": "Formulario Entrada",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "webhookId": "webhook-1"
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "id_solicitud",
+              "value": "={{$now.toISO()}}"
+            },
+            {
+              "name": "tipo_formulario",
+              "value": "={{$json.tipo_formulario}}"
+            },
+            {
+              "name": "fecha_procesamiento",
+              "value": "={{$now.format('DD/MM/YYYY HH:mm')}}"
+            },
+            {
+              "name": "estado",
+              "value": "pendiente"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-1",
+      "name": "Validar Datos",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.tipo_formulario}}",
+                    "rightValue": "anticipos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "anticipos"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.tipo_formulario}}",
+                    "rightValue": "reintegros",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "reintegros"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.tipo_formulario}}",
+                    "rightValue": "compras",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "compras"
+            }
+          ]
+        }
+      },
+      "id": "switch-1",
+      "name": "Tipo de Formulario",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar Anticipos\nconst datos = items[0].json;\n\nconst estructuraAnticipos = {\n  id_solicitud: datos.id_solicitud,\n  tipo_formulario: datos.tipo_formulario,\n  fecha_procesamiento: datos.fecha_procesamiento,\n  estado: datos.estado,\n  datos_generales: {\n    codigo_proyecto: datos.datos_generales?.codigo_proyecto || '',\n    fuente_financiamiento: datos.datos_generales?.fuente_financiamiento || '',\n    institucion: datos.datos_generales?.institucion || '',\n    descripcion_actividad: datos.datos_generales?.descripcion_actividad || '',\n    beneficiario: datos.datos_generales?.beneficiario || '',\n    cuit: datos.datos_generales?.cuit || '',\n    email: datos.datos_generales?.email || ''\n  },\n  detalle_gastos: datos.detalle_gastos || [],\n  totales: datos.totales || {},\n  viaticos: datos.viaticos || null,\n  rendicion: datos.rendicion || {},\n  documentos: datos.documentos || {},\n  timestamp: datos.timestamp || ''\n};\n\nreturn [{ json: estructuraAnticipos }];"
+      },
+      "id": "function-anticipos",
+      "name": "Estructurar Anticipos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 150]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar Reintegros\nconst datos = items[0].json;\n\nconst estructuraReintegros = {\n  id_solicitud: datos.id_solicitud,\n  tipo_formulario: datos.tipo_formulario,\n  fecha_procesamiento: datos.fecha_procesamiento,\n  estado: datos.estado,\n  datos_generales: {\n    codigo_proyecto: datos.datos_generales?.codigo_proyecto || '',\n    fuente_financiamiento: datos.datos_generales?.fuente_financiamiento || '',\n    institucion: datos.datos_generales?.institucion || '',\n    descripcion_actividad: datos.datos_generales?.descripcion_actividad || '',\n    beneficiario: datos.datos_generales?.beneficiario || '',\n    cuit: datos.datos_generales?.cuit || '',\n    email: datos.datos_generales?.email || ''\n  },\n  detalle_gastos: datos.detalle_gastos || [],\n  totales: datos.totales || {},\n  viaticos: datos.viaticos || null,\n  documentos: datos.documentos || {},\n  timestamp: datos.timestamp || ''\n};\n\nreturn [{ json: estructuraReintegros }];"
+      },
+      "id": "function-reintegros",
+      "name": "Estructurar Reintegros",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar Compras\nconst datos = items[0].json;\n\nconst estructuraCompras = {\n  id_solicitud: datos.id_solicitud,\n  tipo_formulario: datos.tipo_formulario,\n  fecha_procesamiento: datos.fecha_procesamiento,\n  estado: datos.estado,\n  datos_generales: {\n    codigo_proyecto: datos.datos_generales?.codigo_proyecto || '',\n    fuente_financiamiento: datos.datos_generales?.fuente_financiamiento || '',\n    institucion: datos.datos_generales?.institucion || '',\n    descripcion_actividad: datos.datos_generales?.descripcion_actividad || '',\n    nombre_solicitante: datos.datos_generales?.nombre_solicitante || '',\n    mail_solicitante: datos.datos_generales?.mail_solicitante || '',\n    celular_solicitante: datos.datos_generales?.celular_solicitante || '',\n    fecha_solicitud: datos.datos_generales?.fecha_solicitud || ''\n  },\n  detalle_bienes: datos.detalle_bienes || [],\n  proveedores_bienes: datos.proveedores_bienes || [],\n  detalle_servicios: datos.detalle_servicios || [],\n  proveedores_servicios: datos.proveedores_servicios || [],\n  totales_compra: datos.totales_compra || {},\n  documentos: datos.documentos || {},\n  timestamp: datos.timestamp || ''\n};\n\nreturn [{ json: estructuraCompras }];"
+      },
+      "id": "function-compras",
+      "name": "Estructurar Compras",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 450]
+    },
+    {
+      "parameters": {
+        "operation": "toJSON",
+        "options": {}
+      },
+      "id": "json-1",
+      "name": "Convertir a JSON",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "leftValue": "={{$json.tipo_formulario}}",
+              "rightValue": "anticipos",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "id": "if-1",
+      "name": "Es Anticipo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    }
+  ],
+  "connections": {
+    "Formulario Entrada": {
+      "main": [
+        [
+          {
+            "node": "Validar Datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Datos": {
+      "main": [
+        [
+          {
+            "node": "Tipo de Formulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tipo de Formulario": {
+      "main": [
+        [
+          {
+            "node": "Estructurar Anticipos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Estructurar Reintegros",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Estructurar Compras",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estructurar Anticipos": {
+      "main": [
+        [
+          {
+            "node": "Convertir a JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estructurar Reintegros": {
+      "main": [
+        [
+          {
+            "node": "Convertir a JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estructurar Compras": {
+      "main": [
+        [
+          {
+            "node": "Convertir a JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convertir a JSON": {
+      "main": [
+        [
+          {
+            "node": "Es Anticipo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2026-04-15T23:30:00.000Z",
+  "versionId": "1"
+}

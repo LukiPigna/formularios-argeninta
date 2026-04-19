@@ -1,0 +1,3092 @@
+{
+  "archivo1": {
+    "nombre_archivo": "Planilla-de-Anticipos-y-Rendiciones-Enero-2026.xlsx",
+    "hojas": [
+      {
+        "nombre_hoja": "Formul. Anticipos y Rendiciones",
+        "dimensiones": "A1:BH47",
+        "rangos": {
+          "filas": "1 a 47",
+          "columnas": "1 a 60"
+        },
+        "estructura": [],
+        "formulas": [
+          {
+            "celda": "C6",
+            "formula": "=+VLOOKUP($C$5,tabla,2,0)"
+          },
+          {
+            "celda": "D18",
+            "formula": "=SUM(D14:D17)"
+          },
+          {
+            "celda": "E18",
+            "formula": "=SUM(E14:E17)"
+          },
+          {
+            "celda": "D33",
+            "formula": "=SUM(D27:D32)"
+          },
+          {
+            "celda": "E33",
+            "formula": "=SUM(E27:E32)"
+          },
+          {
+            "celda": "F33",
+            "formula": "=SUM(F27:F32)"
+          },
+          {
+            "celda": "D34",
+            "formula": "=+D18"
+          },
+          {
+            "celda": "E34",
+            "formula": "=+E18"
+          },
+          {
+            "celda": "D35",
+            "formula": "=IF(D33-D34>0,D33-D34,0)"
+          },
+          {
+            "celda": "E35",
+            "formula": "=IF(E33-E34>0,E33-E34,0)"
+          },
+          {
+            "celda": "D36",
+            "formula": "=IF(D34-D33>0,D34-D33,0)"
+          },
+          {
+            "celda": "E36",
+            "formula": "=IF(E34-E33>0,E34-E33,0)"
+          },
+          {
+            "celda": "D45",
+            "formula": "=+D41*D43"
+          },
+          {
+            "celda": "E45",
+            "formula": "=+E41*E43"
+          }
+        ],
+        "validaciones": [
+          {
+            "rango": "C5:F5, C5:F5",
+            "tipo": "list",
+            "formula1": "comp",
+            "formula2": null,
+            "error": null
+          }
+        ],
+        "combinaciones": [
+          {
+            "rango": "B47:C47",
+            "valor": null
+          },
+          {
+            "rango": "C8:F8",
+            "valor": null
+          },
+          {
+            "rango": "A11:B11",
+            "valor": "E-mail de contacto del Beneficiario:"
+          },
+          {
+            "rango": "B46:C46",
+            "valor": "Medio de Transporte"
+          },
+          {
+            "rango": "A18:C18",
+            "valor": "TOTAL:"
+          },
+          {
+            "rango": "C7:F7",
+            "valor": null
+          },
+          {
+            "rango": "A6:B6",
+            "valor": "Fuente de Financiamiento:"
+          },
+          {
+            "rango": "B39:C39",
+            "valor": "Completar solo para Viáticos"
+          },
+          {
+            "rango": "A7:B7",
+            "valor": "Institución a la que se afecta el gasto:"
+          },
+          {
+            "rango": "C6:F6",
+            "valor": "=+VLOOKUP($C$5,tabla,2,0)"
+          },
+          {
+            "rango": "C5:F5",
+            "valor": null
+          },
+          {
+            "rango": "B34:C34",
+            "valor": "Monto del anticipo"
+          },
+          {
+            "rango": "A5:B5",
+            "valor": "Código de Proyecto:"
+          },
+          {
+            "rango": "C10:F10",
+            "valor": null
+          },
+          {
+            "rango": "A8:B8",
+            "valor": "Descripción de la actividad a desarrollar:"
+          },
+          {
+            "rango": "C9:F9",
+            "valor": null
+          },
+          {
+            "rango": "A2:F3",
+            "valor": "Solicitud de Anticipo de Fondos / Viáticos"
+          },
+          {
+            "rango": "A20:E20",
+            "valor": "Adjuntar Constancia de Datos Bancarios"
+          },
+          {
+            "rango": "B33:C33",
+            "valor": "Monto rendido"
+          },
+          {
+            "rango": "A10:B10",
+            "valor": "CUIT / CUIL del Beneficiario:"
+          },
+          {
+            "rango": "B36:C36",
+            "valor": "Devolución por parte del beneficiario (adjuntar comprobante transferencia)"
+          },
+          {
+            "rango": "C11:F11",
+            "valor": null
+          },
+          {
+            "rango": "A22:F23",
+            "valor": "Rendición de Anticipo"
+          },
+          {
+            "rango": "A9:B9",
+            "valor": "Beneficiario del Anticipo:"
+          },
+          {
+            "rango": "B35:C35",
+            "valor": "Complemento a pagar al beneficiario "
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Listado",
+        "dimensiones": "A1:F141",
+        "rangos": {
+          "filas": "1 a 141",
+          "columnas": "1 a 6"
+        },
+        "estructura": [],
+        "formulas": [
+          {
+            "celda": "E2",
+            "formula": "=CONCATENATE(A2,\" - \",B2)"
+          },
+          {
+            "celda": "F2",
+            "formula": "=+C2"
+          },
+          {
+            "celda": "E3",
+            "formula": "=CONCATENATE(A3,\" - \",B3)"
+          },
+          {
+            "celda": "F3",
+            "formula": "=+C3"
+          },
+          {
+            "celda": "E4",
+            "formula": "=CONCATENATE(A4,\" - \",B4)"
+          },
+          {
+            "celda": "F4",
+            "formula": "=+C4"
+          },
+          {
+            "celda": "E5",
+            "formula": "=CONCATENATE(A5,\" - \",B5)"
+          },
+          {
+            "celda": "F5",
+            "formula": "=+C5"
+          },
+          {
+            "celda": "E6",
+            "formula": "=CONCATENATE(A6,\" - \",B6)"
+          },
+          {
+            "celda": "F6",
+            "formula": "=+C6"
+          },
+          {
+            "celda": "E7",
+            "formula": "=CONCATENATE(A7,\" - \",B7)"
+          },
+          {
+            "celda": "F7",
+            "formula": "=+C7"
+          },
+          {
+            "celda": "E8",
+            "formula": "=CONCATENATE(A8,\" - \",B8)"
+          },
+          {
+            "celda": "F8",
+            "formula": "=+C8"
+          },
+          {
+            "celda": "E9",
+            "formula": "=CONCATENATE(A9,\" - \",B9)"
+          },
+          {
+            "celda": "F9",
+            "formula": "=+C9"
+          },
+          {
+            "celda": "E10",
+            "formula": "=CONCATENATE(A10,\" - \",B10)"
+          },
+          {
+            "celda": "F10",
+            "formula": "=+C10"
+          },
+          {
+            "celda": "E11",
+            "formula": "=CONCATENATE(A11,\" - \",B11)"
+          },
+          {
+            "celda": "F11",
+            "formula": "=+C11"
+          },
+          {
+            "celda": "E12",
+            "formula": "=CONCATENATE(A12,\" - \",B12)"
+          },
+          {
+            "celda": "F12",
+            "formula": "=+C12"
+          },
+          {
+            "celda": "E13",
+            "formula": "=CONCATENATE(A13,\" - \",B13)"
+          },
+          {
+            "celda": "F13",
+            "formula": "=+C13"
+          },
+          {
+            "celda": "E14",
+            "formula": "=CONCATENATE(A14,\" - \",B14)"
+          },
+          {
+            "celda": "F14",
+            "formula": "=+C14"
+          },
+          {
+            "celda": "E15",
+            "formula": "=CONCATENATE(A15,\" - \",B15)"
+          },
+          {
+            "celda": "F15",
+            "formula": "=+C15"
+          },
+          {
+            "celda": "E16",
+            "formula": "=CONCATENATE(A16,\" - \",B16)"
+          },
+          {
+            "celda": "F16",
+            "formula": "=+C16"
+          },
+          {
+            "celda": "E17",
+            "formula": "=CONCATENATE(A17,\" - \",B17)"
+          },
+          {
+            "celda": "F17",
+            "formula": "=+C17"
+          },
+          {
+            "celda": "E18",
+            "formula": "=CONCATENATE(A18,\" - \",B18)"
+          },
+          {
+            "celda": "F18",
+            "formula": "=+C18"
+          },
+          {
+            "celda": "E19",
+            "formula": "=CONCATENATE(A19,\" - \",B19)"
+          },
+          {
+            "celda": "F19",
+            "formula": "=+C19"
+          },
+          {
+            "celda": "E20",
+            "formula": "=CONCATENATE(A20,\" - \",B20)"
+          },
+          {
+            "celda": "F20",
+            "formula": "=+C20"
+          },
+          {
+            "celda": "E21",
+            "formula": "=CONCATENATE(A21,\" - \",B21)"
+          },
+          {
+            "celda": "F21",
+            "formula": "=+C21"
+          },
+          {
+            "celda": "E22",
+            "formula": "=CONCATENATE(A22,\" - \",B22)"
+          },
+          {
+            "celda": "F22",
+            "formula": "=+C22"
+          },
+          {
+            "celda": "E23",
+            "formula": "=CONCATENATE(A23,\" - \",B23)"
+          },
+          {
+            "celda": "F23",
+            "formula": "=+C23"
+          },
+          {
+            "celda": "E24",
+            "formula": "=CONCATENATE(A24,\" - \",B24)"
+          },
+          {
+            "celda": "F24",
+            "formula": "=+C24"
+          },
+          {
+            "celda": "E25",
+            "formula": "=CONCATENATE(A25,\" - \",B25)"
+          },
+          {
+            "celda": "F25",
+            "formula": "=+C25"
+          },
+          {
+            "celda": "E26",
+            "formula": "=CONCATENATE(A26,\" - \",B26)"
+          },
+          {
+            "celda": "F26",
+            "formula": "=+C26"
+          },
+          {
+            "celda": "E27",
+            "formula": "=CONCATENATE(A27,\" - \",B27)"
+          },
+          {
+            "celda": "F27",
+            "formula": "=+C27"
+          },
+          {
+            "celda": "E28",
+            "formula": "=CONCATENATE(A28,\" - \",B28)"
+          },
+          {
+            "celda": "F28",
+            "formula": "=+C28"
+          },
+          {
+            "celda": "E29",
+            "formula": "=CONCATENATE(A29,\" - \",B29)"
+          },
+          {
+            "celda": "F29",
+            "formula": "=+C29"
+          },
+          {
+            "celda": "E30",
+            "formula": "=CONCATENATE(A30,\" - \",B30)"
+          },
+          {
+            "celda": "F30",
+            "formula": "=+C30"
+          },
+          {
+            "celda": "E31",
+            "formula": "=CONCATENATE(A31,\" - \",B31)"
+          },
+          {
+            "celda": "F31",
+            "formula": "=+C31"
+          },
+          {
+            "celda": "E32",
+            "formula": "=CONCATENATE(A32,\" - \",B32)"
+          },
+          {
+            "celda": "F32",
+            "formula": "=+C32"
+          },
+          {
+            "celda": "E33",
+            "formula": "=CONCATENATE(A33,\" - \",B33)"
+          },
+          {
+            "celda": "F33",
+            "formula": "=+C33"
+          },
+          {
+            "celda": "E34",
+            "formula": "=CONCATENATE(A34,\" - \",B34)"
+          },
+          {
+            "celda": "F34",
+            "formula": "=+C34"
+          },
+          {
+            "celda": "E35",
+            "formula": "=CONCATENATE(A35,\" - \",B35)"
+          },
+          {
+            "celda": "F35",
+            "formula": "=+C35"
+          },
+          {
+            "celda": "E36",
+            "formula": "=CONCATENATE(A36,\" - \",B36)"
+          },
+          {
+            "celda": "F36",
+            "formula": "=+C36"
+          },
+          {
+            "celda": "E37",
+            "formula": "=CONCATENATE(A37,\" - \",B37)"
+          },
+          {
+            "celda": "F37",
+            "formula": "=+C37"
+          },
+          {
+            "celda": "E38",
+            "formula": "=CONCATENATE(A38,\" - \",B38)"
+          },
+          {
+            "celda": "F38",
+            "formula": "=+C38"
+          },
+          {
+            "celda": "E39",
+            "formula": "=CONCATENATE(A39,\" - \",B39)"
+          },
+          {
+            "celda": "F39",
+            "formula": "=+C39"
+          },
+          {
+            "celda": "E40",
+            "formula": "=CONCATENATE(A40,\" - \",B40)"
+          },
+          {
+            "celda": "F40",
+            "formula": "=+C40"
+          },
+          {
+            "celda": "E41",
+            "formula": "=CONCATENATE(A41,\" - \",B41)"
+          },
+          {
+            "celda": "F41",
+            "formula": "=+C41"
+          },
+          {
+            "celda": "E42",
+            "formula": "=CONCATENATE(A42,\" - \",B42)"
+          },
+          {
+            "celda": "F42",
+            "formula": "=+C42"
+          },
+          {
+            "celda": "E43",
+            "formula": "=CONCATENATE(A43,\" - \",B43)"
+          },
+          {
+            "celda": "F43",
+            "formula": "=+C43"
+          },
+          {
+            "celda": "E44",
+            "formula": "=CONCATENATE(A44,\" - \",B44)"
+          },
+          {
+            "celda": "F44",
+            "formula": "=+C44"
+          },
+          {
+            "celda": "E45",
+            "formula": "=CONCATENATE(A45,\" - \",B45)"
+          },
+          {
+            "celda": "F45",
+            "formula": "=+C45"
+          },
+          {
+            "celda": "E46",
+            "formula": "=CONCATENATE(A46,\" - \",B46)"
+          },
+          {
+            "celda": "F46",
+            "formula": "=+C46"
+          },
+          {
+            "celda": "E47",
+            "formula": "=CONCATENATE(A47,\" - \",B47)"
+          },
+          {
+            "celda": "F47",
+            "formula": "=+C47"
+          },
+          {
+            "celda": "E48",
+            "formula": "=CONCATENATE(A48,\" - \",B48)"
+          },
+          {
+            "celda": "F48",
+            "formula": "=+C48"
+          },
+          {
+            "celda": "E49",
+            "formula": "=CONCATENATE(A49,\" - \",B49)"
+          },
+          {
+            "celda": "F49",
+            "formula": "=+C49"
+          },
+          {
+            "celda": "E50",
+            "formula": "=CONCATENATE(A50,\" - \",B50)"
+          },
+          {
+            "celda": "F50",
+            "formula": "=+C50"
+          },
+          {
+            "celda": "E51",
+            "formula": "=CONCATENATE(A51,\" - \",B51)"
+          },
+          {
+            "celda": "F51",
+            "formula": "=+C51"
+          },
+          {
+            "celda": "E52",
+            "formula": "=CONCATENATE(A52,\" - \",B52)"
+          },
+          {
+            "celda": "F52",
+            "formula": "=+C52"
+          },
+          {
+            "celda": "E53",
+            "formula": "=CONCATENATE(A53,\" - \",B53)"
+          },
+          {
+            "celda": "F53",
+            "formula": "=+C53"
+          },
+          {
+            "celda": "E54",
+            "formula": "=CONCATENATE(A54,\" - \",B54)"
+          },
+          {
+            "celda": "F54",
+            "formula": "=+C54"
+          },
+          {
+            "celda": "E55",
+            "formula": "=CONCATENATE(A55,\" - \",B55)"
+          },
+          {
+            "celda": "F55",
+            "formula": "=+C55"
+          },
+          {
+            "celda": "E56",
+            "formula": "=CONCATENATE(A56,\" - \",B56)"
+          },
+          {
+            "celda": "F56",
+            "formula": "=+C56"
+          },
+          {
+            "celda": "E57",
+            "formula": "=CONCATENATE(A57,\" - \",B57)"
+          },
+          {
+            "celda": "F57",
+            "formula": "=+C57"
+          },
+          {
+            "celda": "E58",
+            "formula": "=CONCATENATE(A58,\" - \",B58)"
+          },
+          {
+            "celda": "F58",
+            "formula": "=+C58"
+          },
+          {
+            "celda": "E59",
+            "formula": "=CONCATENATE(A59,\" - \",B59)"
+          },
+          {
+            "celda": "F59",
+            "formula": "=+C59"
+          },
+          {
+            "celda": "E60",
+            "formula": "=CONCATENATE(A60,\" - \",B60)"
+          },
+          {
+            "celda": "F60",
+            "formula": "=+C60"
+          },
+          {
+            "celda": "E61",
+            "formula": "=CONCATENATE(A61,\" - \",B61)"
+          },
+          {
+            "celda": "F61",
+            "formula": "=+C61"
+          },
+          {
+            "celda": "E62",
+            "formula": "=CONCATENATE(A62,\" - \",B62)"
+          },
+          {
+            "celda": "F62",
+            "formula": "=+C62"
+          },
+          {
+            "celda": "E63",
+            "formula": "=CONCATENATE(A63,\" - \",B63)"
+          },
+          {
+            "celda": "F63",
+            "formula": "=+C63"
+          },
+          {
+            "celda": "E64",
+            "formula": "=CONCATENATE(A64,\" - \",B64)"
+          },
+          {
+            "celda": "F64",
+            "formula": "=+C64"
+          },
+          {
+            "celda": "E65",
+            "formula": "=CONCATENATE(A65,\" - \",B65)"
+          },
+          {
+            "celda": "F65",
+            "formula": "=+C65"
+          },
+          {
+            "celda": "E66",
+            "formula": "=CONCATENATE(A66,\" - \",B66)"
+          },
+          {
+            "celda": "F66",
+            "formula": "=+C66"
+          },
+          {
+            "celda": "E67",
+            "formula": "=CONCATENATE(A67,\" - \",B67)"
+          },
+          {
+            "celda": "F67",
+            "formula": "=+C67"
+          },
+          {
+            "celda": "E68",
+            "formula": "=CONCATENATE(A68,\" - \",B68)"
+          },
+          {
+            "celda": "F68",
+            "formula": "=+C68"
+          },
+          {
+            "celda": "E69",
+            "formula": "=CONCATENATE(A69,\" - \",B69)"
+          },
+          {
+            "celda": "F69",
+            "formula": "=+C69"
+          },
+          {
+            "celda": "E70",
+            "formula": "=CONCATENATE(A70,\" - \",B70)"
+          },
+          {
+            "celda": "F70",
+            "formula": "=+C70"
+          },
+          {
+            "celda": "E71",
+            "formula": "=CONCATENATE(A71,\" - \",B71)"
+          },
+          {
+            "celda": "F71",
+            "formula": "=+C71"
+          },
+          {
+            "celda": "E72",
+            "formula": "=CONCATENATE(A72,\" - \",B72)"
+          },
+          {
+            "celda": "F72",
+            "formula": "=+C72"
+          },
+          {
+            "celda": "E73",
+            "formula": "=CONCATENATE(A73,\" - \",B73)"
+          },
+          {
+            "celda": "F73",
+            "formula": "=+C73"
+          },
+          {
+            "celda": "E74",
+            "formula": "=CONCATENATE(A74,\" - \",B74)"
+          },
+          {
+            "celda": "F74",
+            "formula": "=+C74"
+          },
+          {
+            "celda": "E75",
+            "formula": "=CONCATENATE(A75,\" - \",B75)"
+          },
+          {
+            "celda": "F75",
+            "formula": "=+C75"
+          },
+          {
+            "celda": "E76",
+            "formula": "=CONCATENATE(A76,\" - \",B76)"
+          },
+          {
+            "celda": "F76",
+            "formula": "=+C76"
+          },
+          {
+            "celda": "E77",
+            "formula": "=CONCATENATE(A77,\" - \",B77)"
+          },
+          {
+            "celda": "F77",
+            "formula": "=+C77"
+          },
+          {
+            "celda": "E78",
+            "formula": "=CONCATENATE(A78,\" - \",B78)"
+          },
+          {
+            "celda": "F78",
+            "formula": "=+C78"
+          },
+          {
+            "celda": "E79",
+            "formula": "=CONCATENATE(A79,\" - \",B79)"
+          },
+          {
+            "celda": "F79",
+            "formula": "=+C79"
+          },
+          {
+            "celda": "E80",
+            "formula": "=CONCATENATE(A80,\" - \",B80)"
+          },
+          {
+            "celda": "F80",
+            "formula": "=+C80"
+          },
+          {
+            "celda": "E81",
+            "formula": "=CONCATENATE(A81,\" - \",B81)"
+          },
+          {
+            "celda": "F81",
+            "formula": "=+C81"
+          },
+          {
+            "celda": "E82",
+            "formula": "=CONCATENATE(A82,\" - \",B82)"
+          },
+          {
+            "celda": "F82",
+            "formula": "=+C82"
+          },
+          {
+            "celda": "E83",
+            "formula": "=CONCATENATE(A83,\" - \",B83)"
+          },
+          {
+            "celda": "F83",
+            "formula": "=+C83"
+          },
+          {
+            "celda": "E84",
+            "formula": "=CONCATENATE(A84,\" - \",B84)"
+          },
+          {
+            "celda": "F84",
+            "formula": "=+C84"
+          },
+          {
+            "celda": "E85",
+            "formula": "=CONCATENATE(A85,\" - \",B85)"
+          },
+          {
+            "celda": "F85",
+            "formula": "=+C85"
+          },
+          {
+            "celda": "E86",
+            "formula": "=CONCATENATE(A86,\" - \",B86)"
+          },
+          {
+            "celda": "F86",
+            "formula": "=+C86"
+          },
+          {
+            "celda": "E87",
+            "formula": "=CONCATENATE(A87,\" - \",B87)"
+          },
+          {
+            "celda": "F87",
+            "formula": "=+C87"
+          },
+          {
+            "celda": "E88",
+            "formula": "=CONCATENATE(A88,\" - \",B88)"
+          },
+          {
+            "celda": "F88",
+            "formula": "=+C88"
+          },
+          {
+            "celda": "E89",
+            "formula": "=CONCATENATE(A89,\" - \",B89)"
+          },
+          {
+            "celda": "F89",
+            "formula": "=+C89"
+          },
+          {
+            "celda": "E90",
+            "formula": "=CONCATENATE(A90,\" - \",B90)"
+          },
+          {
+            "celda": "F90",
+            "formula": "=+C90"
+          },
+          {
+            "celda": "E91",
+            "formula": "=CONCATENATE(A91,\" - \",B91)"
+          },
+          {
+            "celda": "F91",
+            "formula": "=+C91"
+          },
+          {
+            "celda": "E92",
+            "formula": "=CONCATENATE(A92,\" - \",B92)"
+          },
+          {
+            "celda": "F92",
+            "formula": "=+C92"
+          },
+          {
+            "celda": "E93",
+            "formula": "=CONCATENATE(A93,\" - \",B93)"
+          },
+          {
+            "celda": "F93",
+            "formula": "=+C93"
+          },
+          {
+            "celda": "E94",
+            "formula": "=CONCATENATE(A94,\" - \",B94)"
+          },
+          {
+            "celda": "F94",
+            "formula": "=+C94"
+          },
+          {
+            "celda": "E95",
+            "formula": "=CONCATENATE(A95,\" - \",B95)"
+          },
+          {
+            "celda": "F95",
+            "formula": "=+C95"
+          },
+          {
+            "celda": "E96",
+            "formula": "=CONCATENATE(A96,\" - \",B96)"
+          },
+          {
+            "celda": "F96",
+            "formula": "=+C96"
+          },
+          {
+            "celda": "E97",
+            "formula": "=CONCATENATE(A97,\" - \",B97)"
+          },
+          {
+            "celda": "F97",
+            "formula": "=+C97"
+          },
+          {
+            "celda": "E98",
+            "formula": "=CONCATENATE(A98,\" - \",B98)"
+          },
+          {
+            "celda": "F98",
+            "formula": "=+C98"
+          },
+          {
+            "celda": "E99",
+            "formula": "=CONCATENATE(A99,\" - \",B99)"
+          },
+          {
+            "celda": "F99",
+            "formula": "=+C99"
+          },
+          {
+            "celda": "E100",
+            "formula": "=CONCATENATE(A100,\" - \",B100)"
+          },
+          {
+            "celda": "F100",
+            "formula": "=+C100"
+          },
+          {
+            "celda": "E101",
+            "formula": "=CONCATENATE(A101,\" - \",B101)"
+          },
+          {
+            "celda": "F101",
+            "formula": "=+C101"
+          },
+          {
+            "celda": "E102",
+            "formula": "=CONCATENATE(A102,\" - \",B102)"
+          },
+          {
+            "celda": "F102",
+            "formula": "=+C102"
+          },
+          {
+            "celda": "E103",
+            "formula": "=CONCATENATE(A103,\" - \",B103)"
+          },
+          {
+            "celda": "F103",
+            "formula": "=+C103"
+          },
+          {
+            "celda": "E104",
+            "formula": "=CONCATENATE(A104,\" - \",B104)"
+          },
+          {
+            "celda": "F104",
+            "formula": "=+C104"
+          },
+          {
+            "celda": "E105",
+            "formula": "=CONCATENATE(A105,\" - \",B105)"
+          },
+          {
+            "celda": "F105",
+            "formula": "=+C105"
+          },
+          {
+            "celda": "E106",
+            "formula": "=CONCATENATE(A106,\" - \",B106)"
+          },
+          {
+            "celda": "F106",
+            "formula": "=+C106"
+          },
+          {
+            "celda": "E107",
+            "formula": "=CONCATENATE(A107,\" - \",B107)"
+          },
+          {
+            "celda": "F107",
+            "formula": "=+C107"
+          },
+          {
+            "celda": "E108",
+            "formula": "=CONCATENATE(A108,\" - \",B108)"
+          },
+          {
+            "celda": "F108",
+            "formula": "=+C108"
+          },
+          {
+            "celda": "E109",
+            "formula": "=CONCATENATE(A109,\" - \",B109)"
+          },
+          {
+            "celda": "F109",
+            "formula": "=+C109"
+          },
+          {
+            "celda": "E110",
+            "formula": "=CONCATENATE(A110,\" - \",B110)"
+          },
+          {
+            "celda": "F110",
+            "formula": "=+C110"
+          },
+          {
+            "celda": "E111",
+            "formula": "=CONCATENATE(A111,\" - \",B111)"
+          },
+          {
+            "celda": "E112",
+            "formula": "=CONCATENATE(A112,\" - \",B112)"
+          },
+          {
+            "celda": "E113",
+            "formula": "=CONCATENATE(A113,\" - \",B113)"
+          },
+          {
+            "celda": "E114",
+            "formula": "=CONCATENATE(A114,\" - \",B114)"
+          },
+          {
+            "celda": "E115",
+            "formula": "=CONCATENATE(A115,\" - \",B115)"
+          },
+          {
+            "celda": "E116",
+            "formula": "=CONCATENATE(A116,\" - \",B116)"
+          },
+          {
+            "celda": "E117",
+            "formula": "=CONCATENATE(A117,\" - \",B117)"
+          },
+          {
+            "celda": "E118",
+            "formula": "=CONCATENATE(A118,\" - \",B118)"
+          },
+          {
+            "celda": "E119",
+            "formula": "=CONCATENATE(A119,\" - \",B119)"
+          },
+          {
+            "celda": "E120",
+            "formula": "=CONCATENATE(A120,\" - \",B120)"
+          },
+          {
+            "celda": "E121",
+            "formula": "=CONCATENATE(A121,\" - \",B121)"
+          },
+          {
+            "celda": "E122",
+            "formula": "=CONCATENATE(A122,\" - \",B122)"
+          },
+          {
+            "celda": "E123",
+            "formula": "=CONCATENATE(A123,\" - \",B123)"
+          },
+          {
+            "celda": "E124",
+            "formula": "=CONCATENATE(A124,\" - \",B124)"
+          },
+          {
+            "celda": "E125",
+            "formula": "=CONCATENATE(A125,\" - \",B125)"
+          },
+          {
+            "celda": "E126",
+            "formula": "=CONCATENATE(A126,\" - \",B126)"
+          },
+          {
+            "celda": "E127",
+            "formula": "=CONCATENATE(A127,\" - \",B127)"
+          },
+          {
+            "celda": "E128",
+            "formula": "=CONCATENATE(A128,\" - \",B128)"
+          },
+          {
+            "celda": "E129",
+            "formula": "=CONCATENATE(A129,\" - \",B129)"
+          },
+          {
+            "celda": "E130",
+            "formula": "=CONCATENATE(A130,\" - \",B130)"
+          },
+          {
+            "celda": "E131",
+            "formula": "=CONCATENATE(A131,\" - \",B131)"
+          },
+          {
+            "celda": "E132",
+            "formula": "=CONCATENATE(A132,\" - \",B132)"
+          },
+          {
+            "celda": "E133",
+            "formula": "=CONCATENATE(A133,\" - \",B133)"
+          },
+          {
+            "celda": "E134",
+            "formula": "=CONCATENATE(A134,\" - \",B134)"
+          },
+          {
+            "celda": "E135",
+            "formula": "=CONCATENATE(A135,\" - \",B135)"
+          },
+          {
+            "celda": "E136",
+            "formula": "=CONCATENATE(A136,\" - \",B136)"
+          },
+          {
+            "celda": "E137",
+            "formula": "=CONCATENATE(A137,\" - \",B137)"
+          },
+          {
+            "celda": "E138",
+            "formula": "=CONCATENATE(A138,\" - \",B138)"
+          },
+          {
+            "celda": "E139",
+            "formula": "=CONCATENATE(A139,\" - \",B139)"
+          },
+          {
+            "celda": "E140",
+            "formula": "=CONCATENATE(A140,\" - \",B140)"
+          },
+          {
+            "celda": "E141",
+            "formula": "=CONCATENATE(A141,\" - \",B141)"
+          }
+        ],
+        "validaciones": [],
+        "combinaciones": []
+      },
+      {
+        "nombre_hoja": "Info Relevante",
+        "dimensiones": "A1:P57",
+        "rangos": {
+          "filas": "1 a 57",
+          "columnas": "1 a 16"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": [
+          {
+            "rango": "A8:D8",
+            "valor": "* Los beneficiarios de los anticipos solo podrán ser participantes del Proyecto"
+          },
+          {
+            "rango": "I17:L17",
+            "valor": null
+          },
+          {
+            "rango": "M8:P8",
+            "valor": "c. En caso de corresponder se podrá solicitar un informe de actividades de la comisión realizada."
+          },
+          {
+            "rango": "M3:P3",
+            "valor": "* Todo gasto debe estar contemplado en el Plan de Actividades (Plan Operativo Anual, Plan de Adquisiciones, Presupuesto, etc.) vigente al momento de llevar a cabo la actividad para la cual se solicita."
+          },
+          {
+            "rango": "I1:L1",
+            "valor": "Anticipo de Viáticos"
+          },
+          {
+            "rango": "M12:P14",
+            "valor": "b. Devolución de fondos: Existen diferencias con los importes pagados como anticipo a reintegrar por parte de la persona que realizó los gastos. \nEs decir: El monto solicitado como anticipo es mayor al importe rendido con la documentación respaldatoria. (Por ejemplo: por regresar antes de los días programados). En este caso, el beneficiario deberá reintegrar el excedente del importe cobrado. La devolución se efectuará en la cuenta bancaria que indique el Área de Vinculación Internacional y se deberá enviar el comprobante de dicha transferencia para que pueda identificarse el crédito en el extracto bancario.\n"
+          },
+          {
+            "rango": "E8:H9",
+            "valor": "* El Responsable Técnico remitirá el formulario y los comprobantes de respaldo vía GYSDOC, dirigido al Área de Vinculación Internacional. O bien, será enviado por el Beneficiario, contando con el aval del Resp. Tecn., registrado y/o expresado dentro de la trazabilidad del trámite."
+          },
+          {
+            "rango": "M17:P17",
+            "valor": "a. Normas o disposiciones del Organismo Donante o Financiador"
+          },
+          {
+            "rango": "I20:L20",
+            "valor": null
+          },
+          {
+            "rango": "E7:H7",
+            "valor": "b. Adjuntar toda la documentación respaldatoria de los gastos efectuados (facturas, constancias de pago, peajes, tickets, combustible, etc.)."
+          },
+          {
+            "rango": "I19:L19",
+            "valor": null
+          },
+          {
+            "rango": "E10:H11",
+            "valor": "*  Las facturas que se remitan como respaldo de los gastos deberán ser tipo “B” o “C” a nombre de Fundación ArgenINTA, CUIT: 30-67630365-7, IVA Exento, Dirección: Av. Cerviño 3101 – 1º Piso – CP1425AGA – Ciudad de Buenos Aires. "
+          },
+          {
+            "rango": "M19:P19",
+            "valor": "b1. Normas o Disposiciones de la Contraparte o Beneficiaria del Proyecto. Ej: Normativa INTA"
+          },
+          {
+            "rango": "I13:L13",
+            "valor": "* Se deberá enviar una solicitud por cada imputación presupuestaria de gastos definida en el Proyecto.                                                                                                                   * Será rechazado cualquier pedido de anticipos de fondos para cualquier beneficiario que cuente con algún anticipo pendiente de rendición."
+          },
+          {
+            "rango": "A9:D9",
+            "valor": "* La Solicitud de Anticipo debe ser enviada con la antelación necesaria al inicio de las actividades programadas para su correcto procesamiento."
+          },
+          {
+            "rango": "I6:L8",
+            "valor": "Es la asignación diaria fija que se paga para atender todos los gastos en concepto de “alojamiento y comida”, con exclusión de los gastos de movilidad y pasajes, que ocasione el desempeño de una comisión de servicio en un lugar alejado a más de cincuenta (50) kilómetros de su asiento habitual. Corresponde el pago de viáticos a toda aquella persona que desarrolle una actividad inherente al Proyecto en una localidad distinta a la de su lugar habitual de trabajo."
+          },
+          {
+            "rango": "E13:H16",
+            "valor": "* Resultados posibles de la rendición:                                                            a. Rendicion 0: No existen diferencias con los importes pagados como anticipo. \nEs decir: El monto solicitado como anticipo coincide con el importe rendido con la documentación respaldatoria.                                                                            b. Devolución de fondos: Existen diferencias con los importes pagados como anticipo a reintegrar por parte de la persona que realizó los gastos. \nEs decir: El monto solicitado como anticipo es mayor al importe rendido con la documentación respaldatoria. En este caso, el beneficiario deberá reintegrar el excedente del importe cobrado. La devolución se efectuará en la cuenta bancaria que indique el Área de Vinculación Internacional y se deberá enviar el comprobante de dicha transferencia para que pueda identificarse el crédito en el extracto bancario.                                                         c. Complemento: Existen diferencias con los importes pagados como anticipo. \nEs decir: El monto solicitado como anticipo es menor al importe rendido con la documentación respaldatoria. En este caso, se le efectuará la transferencia al beneficiario por el excedente gastado.\n\n"
+          },
+          {
+            "rango": "I9:L9",
+            "valor": "                                                                                                           * La Solicitud de Anticipo debe ser enviada con la antelación necesaria al inicio de las actividades programadas para su correcto procesamiento."
+          },
+          {
+            "rango": "E3:H3",
+            "valor": "* Todo gasto debe estar contemplado en el Plan de Actividades (Plan Operativo Anual, Plan de Adquisiciones, Presupuesto, etc.) vigente al momento de llevar a cabo la actividad para la cual se solicita."
+          },
+          {
+            "rango": "A12:D13",
+            "valor": "* Se deberá enviar una solicitud por cada imputación presupuestaria de gastos definida en el Proyecto.                                                                                                                                                  * Será rechazado cualquier pedido de anticipos de fondos para cualquier beneficiario que cuente con algún anticipo pendiente de rendición."
+          },
+          {
+            "rango": "A15:D15",
+            "valor": null
+          },
+          {
+            "rango": "I11:L11",
+            "valor": "*El Responsable Técnico remitirá el formulario vía GYSDOC, dirigido al Área de Vinculación Internacional. O bien, será enviado por el Beneficiario, contando con el aval del Resp. Tecn., registrado y/o expresado dentro de la trazabilidad del trámite."
+          },
+          {
+            "rango": "E5:H5",
+            "valor": "* Se deberá:"
+          },
+          {
+            "rango": "M5:P5",
+            "valor": "* Se deberá:"
+          },
+          {
+            "rango": "A1:D1",
+            "valor": "Anticipo de Fondos"
+          },
+          {
+            "rango": "I14:L15",
+            "valor": "* La modalidad para el pago de viáticos surge de:          a. Normas o disposiciones del Organismo Donante o Financiador.                                                                                b. En su ausencia:                                                                   b1. Normas o Disposiciones de la Contraparte o Beneficiaria del Proyecto. Ej: Normativa INTA.         b2. Normas o Disposiciones de la Fundación ArgenINTA (Reintegro de gastos)"
+          },
+          {
+            "rango": "A6:D6",
+            "valor": "a. Aquellas erogaciones que no se realicen a través de procedimientos específicos (combustible, peajes, etc.)."
+          },
+          {
+            "rango": "M1:P1",
+            "valor": "Rendición de Viáticos"
+          },
+          {
+            "rango": "M11:P11",
+            "valor": "* Resultados posibles de la rendición:                                                                                                                                                                                                                                                                                                                                  a. Rendicion 0: el monto anticipado coincide con el monto rendido. Es decir, el monto solicitado como anticipo coincide con el importe rendido con la documentación respaldatoria\n"
+          },
+          {
+            "rango": "I16:L16",
+            "valor": null
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Informe de actividades",
+        "dimensiones": "A1:M52",
+        "rangos": {
+          "filas": "1 a 52",
+          "columnas": "1 a 13"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": [
+          {
+            "rango": "A30:D31",
+            "valor": "Acciones realizadas en la actividad"
+          },
+          {
+            "rango": "A24:D25",
+            "valor": "Distancia Unidad INTA Sede de Personal Asistente"
+          },
+          {
+            "rango": "A35:D35",
+            "valor": "Producto del Proyecto"
+          },
+          {
+            "rango": "A48:M49",
+            "valor": null
+          },
+          {
+            "rango": "E18:M19",
+            "valor": null
+          },
+          {
+            "rango": "E34:M34",
+            "valor": null
+          },
+          {
+            "rango": "E21:M22",
+            "valor": null
+          },
+          {
+            "rango": "E12:M13",
+            "valor": null
+          },
+          {
+            "rango": "E24:M25",
+            "valor": null
+          },
+          {
+            "rango": "E37:M38",
+            "valor": null
+          },
+          {
+            "rango": "A27:D28",
+            "valor": "Objetivos de la Actividad"
+          },
+          {
+            "rango": "A34:D34",
+            "valor": "Actividad del Proyecto"
+          },
+          {
+            "rango": "A12:D13",
+            "valor": "Nombre del Proyecto "
+          },
+          {
+            "rango": "A37:D38",
+            "valor": "Resultados y Conclusiones"
+          },
+          {
+            "rango": "A18:D19",
+            "valor": "Personal Involucrado en la Actividad"
+          },
+          {
+            "rango": "A21:D22",
+            "valor": "Ubicación d la Actividad"
+          },
+          {
+            "rango": "A6:M6",
+            "valor": "Informe de Actividad"
+          },
+          {
+            "rango": "E15:M16",
+            "valor": null
+          },
+          {
+            "rango": "E40:M41",
+            "valor": null
+          },
+          {
+            "rango": "E33:M33",
+            "valor": null
+          },
+          {
+            "rango": "A43:M44",
+            "valor": null
+          },
+          {
+            "rango": "E27:M28",
+            "valor": null
+          },
+          {
+            "rango": "E30:M31",
+            "valor": null
+          },
+          {
+            "rango": "A15:D16",
+            "valor": "Fecha de realización de la actividad (Indicar fecha y hora)"
+          },
+          {
+            "rango": "A33:D33",
+            "valor": "Componente del Proyecto"
+          },
+          {
+            "rango": "E35:M35",
+            "valor": null
+          },
+          {
+            "rango": "A40:D41",
+            "valor": "Recomendaciones y Comentarios[1]:"
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Ficha ident. Financiera",
+        "dimensiones": "A1:I41",
+        "rangos": {
+          "filas": "1 a 41",
+          "columnas": "1 a 9"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": [
+          {
+            "rango": "B25:I25",
+            "valor": null
+          },
+          {
+            "rango": "B16:I16",
+            "valor": null
+          },
+          {
+            "rango": "B22:I22",
+            "valor": null
+          },
+          {
+            "rango": "B12:I12",
+            "valor": null
+          },
+          {
+            "rango": "B18:I18",
+            "valor": null
+          },
+          {
+            "rango": "A35:I38",
+            "valor": null
+          },
+          {
+            "rango": "B21:I21",
+            "valor": null
+          },
+          {
+            "rango": "B11:I11",
+            "valor": null
+          },
+          {
+            "rango": "A5:I5",
+            "valor": "FICHA IDENTIFICACION FINANCIERA (1)"
+          },
+          {
+            "rango": "B23:I23",
+            "valor": null
+          },
+          {
+            "rango": "B17:I17",
+            "valor": null
+          },
+          {
+            "rango": "A7:I8",
+            "valor": null
+          },
+          {
+            "rango": "A1:I4",
+            "valor": null
+          },
+          {
+            "rango": "B10:I10",
+            "valor": null
+          },
+          {
+            "rango": "B19:I19",
+            "valor": null
+          },
+          {
+            "rango": "A31:I31",
+            "valor": "FIRMA DEL TITULAR DE LA CUENTA"
+          },
+          {
+            "rango": "A39:I39",
+            "valor": "(1) Se deberá adjuntar copia del extracto de cuenta o constancia de datos bancarios"
+          },
+          {
+            "rango": "A34:I34",
+            "valor": "FECHA……../……../…………"
+          },
+          {
+            "rango": "A30:I30",
+            "valor": "………………………………………………………………."
+          },
+          {
+            "rango": "B9:I9",
+            "valor": null
+          },
+          {
+            "rango": "B15:I15",
+            "valor": null
+          },
+          {
+            "rango": "B24:I24",
+            "valor": null
+          },
+          {
+            "rango": "B20:I20",
+            "valor": null
+          },
+          {
+            "rango": "A32:I33",
+            "valor": null
+          },
+          {
+            "rango": "A26:I29",
+            "valor": null
+          },
+          {
+            "rango": "A6:I6",
+            "valor": "(Datos para transferencia bancaria fuera de Argentina)"
+          },
+          {
+            "rango": "A13:I14",
+            "valor": null
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Tablas",
+        "dimensiones": "A1:E42",
+        "rangos": {
+          "filas": "1 a 42",
+          "columnas": "1 a 5"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": []
+      }
+    ]
+  },
+  "archivo2": {
+    "nombre_archivo": "Planilla-de-Reintegros-2026.xlsx",
+    "hojas": [
+      {
+        "nombre_hoja": "Formulario de Reintegro",
+        "dimensiones": "A1:J34",
+        "rangos": {
+          "filas": "1 a 34",
+          "columnas": "1 a 10"
+        },
+        "estructura": [],
+        "formulas": [
+          {
+            "celda": "C5",
+            "formula": "=VLOOKUP(C4,tabla,2,0)"
+          },
+          {
+            "celda": "D20",
+            "formula": "=SUM(D14:D19)"
+          },
+          {
+            "celda": "E20",
+            "formula": "=SUM(E14:E19)"
+          },
+          {
+            "celda": "F20",
+            "formula": "=SUM(F14:F19)"
+          },
+          {
+            "celda": "D30",
+            "formula": "=+D26*D28"
+          },
+          {
+            "celda": "E30",
+            "formula": "=+E26*E28"
+          }
+        ],
+        "validaciones": [
+          {
+            "rango": "C4:F4, C4:F4",
+            "tipo": "list",
+            "formula1": "comp",
+            "formula2": null,
+            "error": null
+          }
+        ],
+        "combinaciones": [
+          {
+            "rango": "C8:F8",
+            "valor": null
+          },
+          {
+            "rango": "C7:F7",
+            "valor": null
+          },
+          {
+            "rango": "B31:C31",
+            "valor": "Medio de Transporte"
+          },
+          {
+            "rango": "A6:B6",
+            "valor": "Institución a la que se afecta el gasto:"
+          },
+          {
+            "rango": "A7:B7",
+            "valor": "Descripción de la actividad a desarrollar:"
+          },
+          {
+            "rango": "A1:F2",
+            "valor": "Reintegro de Gastos / Viáticos"
+          },
+          {
+            "rango": "C6:F6",
+            "valor": null
+          },
+          {
+            "rango": "C5:F5",
+            "valor": "=VLOOKUP(C4,tabla,2,0)"
+          },
+          {
+            "rango": "C4:F4",
+            "valor": null
+          },
+          {
+            "rango": "A5:B5",
+            "valor": "Fuente de Financiamiento:"
+          },
+          {
+            "rango": "C10:F10",
+            "valor": null
+          },
+          {
+            "rango": "A8:B8",
+            "valor": "Beneficiario del Anticipo:"
+          },
+          {
+            "rango": "A22:E22",
+            "valor": "Adjuntar Constancia de Datos Bancarios"
+          },
+          {
+            "rango": "A4:B4",
+            "valor": "Código de Proyecto:"
+          },
+          {
+            "rango": "C9:F9",
+            "valor": null
+          },
+          {
+            "rango": "B24:C24",
+            "valor": "Completar solo para Viáticos"
+          },
+          {
+            "rango": "B20:C20",
+            "valor": "Monto a reintegrar:"
+          },
+          {
+            "rango": "A10:B10",
+            "valor": "E-mail de contacto del Beneficiario:"
+          },
+          {
+            "rango": "B32:C32",
+            "valor": null
+          },
+          {
+            "rango": "A9:B9",
+            "valor": "CUIT / CUIL del Beneficiario:"
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Listado",
+        "dimensiones": "A1:F141",
+        "rangos": {
+          "filas": "1 a 141",
+          "columnas": "1 a 6"
+        },
+        "estructura": [],
+        "formulas": [
+          {
+            "celda": "E2",
+            "formula": "=CONCATENATE(A2,\" - \",B2)"
+          },
+          {
+            "celda": "F2",
+            "formula": "=+C2"
+          },
+          {
+            "celda": "E3",
+            "formula": "=CONCATENATE(A3,\" - \",B3)"
+          },
+          {
+            "celda": "F3",
+            "formula": "=+C3"
+          },
+          {
+            "celda": "E4",
+            "formula": "=CONCATENATE(A4,\" - \",B4)"
+          },
+          {
+            "celda": "F4",
+            "formula": "=+C4"
+          },
+          {
+            "celda": "E5",
+            "formula": "=CONCATENATE(A5,\" - \",B5)"
+          },
+          {
+            "celda": "F5",
+            "formula": "=+C5"
+          },
+          {
+            "celda": "E6",
+            "formula": "=CONCATENATE(A6,\" - \",B6)"
+          },
+          {
+            "celda": "F6",
+            "formula": "=+C6"
+          },
+          {
+            "celda": "E7",
+            "formula": "=CONCATENATE(A7,\" - \",B7)"
+          },
+          {
+            "celda": "F7",
+            "formula": "=+C7"
+          },
+          {
+            "celda": "E8",
+            "formula": "=CONCATENATE(A8,\" - \",B8)"
+          },
+          {
+            "celda": "F8",
+            "formula": "=+C8"
+          },
+          {
+            "celda": "E9",
+            "formula": "=CONCATENATE(A9,\" - \",B9)"
+          },
+          {
+            "celda": "F9",
+            "formula": "=+C9"
+          },
+          {
+            "celda": "E10",
+            "formula": "=CONCATENATE(A10,\" - \",B10)"
+          },
+          {
+            "celda": "F10",
+            "formula": "=+C10"
+          },
+          {
+            "celda": "E11",
+            "formula": "=CONCATENATE(A11,\" - \",B11)"
+          },
+          {
+            "celda": "F11",
+            "formula": "=+C11"
+          },
+          {
+            "celda": "E12",
+            "formula": "=CONCATENATE(A12,\" - \",B12)"
+          },
+          {
+            "celda": "F12",
+            "formula": "=+C12"
+          },
+          {
+            "celda": "E13",
+            "formula": "=CONCATENATE(A13,\" - \",B13)"
+          },
+          {
+            "celda": "F13",
+            "formula": "=+C13"
+          },
+          {
+            "celda": "E14",
+            "formula": "=CONCATENATE(A14,\" - \",B14)"
+          },
+          {
+            "celda": "F14",
+            "formula": "=+C14"
+          },
+          {
+            "celda": "E15",
+            "formula": "=CONCATENATE(A15,\" - \",B15)"
+          },
+          {
+            "celda": "F15",
+            "formula": "=+C15"
+          },
+          {
+            "celda": "E16",
+            "formula": "=CONCATENATE(A16,\" - \",B16)"
+          },
+          {
+            "celda": "F16",
+            "formula": "=+C16"
+          },
+          {
+            "celda": "E17",
+            "formula": "=CONCATENATE(A17,\" - \",B17)"
+          },
+          {
+            "celda": "F17",
+            "formula": "=+C17"
+          },
+          {
+            "celda": "E18",
+            "formula": "=CONCATENATE(A18,\" - \",B18)"
+          },
+          {
+            "celda": "F18",
+            "formula": "=+C18"
+          },
+          {
+            "celda": "E19",
+            "formula": "=CONCATENATE(A19,\" - \",B19)"
+          },
+          {
+            "celda": "F19",
+            "formula": "=+C19"
+          },
+          {
+            "celda": "E20",
+            "formula": "=CONCATENATE(A20,\" - \",B20)"
+          },
+          {
+            "celda": "F20",
+            "formula": "=+C20"
+          },
+          {
+            "celda": "E21",
+            "formula": "=CONCATENATE(A21,\" - \",B21)"
+          },
+          {
+            "celda": "F21",
+            "formula": "=+C21"
+          },
+          {
+            "celda": "E22",
+            "formula": "=CONCATENATE(A22,\" - \",B22)"
+          },
+          {
+            "celda": "F22",
+            "formula": "=+C22"
+          },
+          {
+            "celda": "E23",
+            "formula": "=CONCATENATE(A23,\" - \",B23)"
+          },
+          {
+            "celda": "F23",
+            "formula": "=+C23"
+          },
+          {
+            "celda": "E24",
+            "formula": "=CONCATENATE(A24,\" - \",B24)"
+          },
+          {
+            "celda": "F24",
+            "formula": "=+C24"
+          },
+          {
+            "celda": "E25",
+            "formula": "=CONCATENATE(A25,\" - \",B25)"
+          },
+          {
+            "celda": "F25",
+            "formula": "=+C25"
+          },
+          {
+            "celda": "E26",
+            "formula": "=CONCATENATE(A26,\" - \",B26)"
+          },
+          {
+            "celda": "F26",
+            "formula": "=+C26"
+          },
+          {
+            "celda": "E27",
+            "formula": "=CONCATENATE(A27,\" - \",B27)"
+          },
+          {
+            "celda": "F27",
+            "formula": "=+C27"
+          },
+          {
+            "celda": "E28",
+            "formula": "=CONCATENATE(A28,\" - \",B28)"
+          },
+          {
+            "celda": "F28",
+            "formula": "=+C28"
+          },
+          {
+            "celda": "E29",
+            "formula": "=CONCATENATE(A29,\" - \",B29)"
+          },
+          {
+            "celda": "F29",
+            "formula": "=+C29"
+          },
+          {
+            "celda": "E30",
+            "formula": "=CONCATENATE(A30,\" - \",B30)"
+          },
+          {
+            "celda": "F30",
+            "formula": "=+C30"
+          },
+          {
+            "celda": "E31",
+            "formula": "=CONCATENATE(A31,\" - \",B31)"
+          },
+          {
+            "celda": "F31",
+            "formula": "=+C31"
+          },
+          {
+            "celda": "E32",
+            "formula": "=CONCATENATE(A32,\" - \",B32)"
+          },
+          {
+            "celda": "F32",
+            "formula": "=+C32"
+          },
+          {
+            "celda": "E33",
+            "formula": "=CONCATENATE(A33,\" - \",B33)"
+          },
+          {
+            "celda": "F33",
+            "formula": "=+C33"
+          },
+          {
+            "celda": "E34",
+            "formula": "=CONCATENATE(A34,\" - \",B34)"
+          },
+          {
+            "celda": "F34",
+            "formula": "=+C34"
+          },
+          {
+            "celda": "E35",
+            "formula": "=CONCATENATE(A35,\" - \",B35)"
+          },
+          {
+            "celda": "F35",
+            "formula": "=+C35"
+          },
+          {
+            "celda": "E36",
+            "formula": "=CONCATENATE(A36,\" - \",B36)"
+          },
+          {
+            "celda": "F36",
+            "formula": "=+C36"
+          },
+          {
+            "celda": "E37",
+            "formula": "=CONCATENATE(A37,\" - \",B37)"
+          },
+          {
+            "celda": "F37",
+            "formula": "=+C37"
+          },
+          {
+            "celda": "E38",
+            "formula": "=CONCATENATE(A38,\" - \",B38)"
+          },
+          {
+            "celda": "F38",
+            "formula": "=+C38"
+          },
+          {
+            "celda": "E39",
+            "formula": "=CONCATENATE(A39,\" - \",B39)"
+          },
+          {
+            "celda": "F39",
+            "formula": "=+C39"
+          },
+          {
+            "celda": "E40",
+            "formula": "=CONCATENATE(A40,\" - \",B40)"
+          },
+          {
+            "celda": "F40",
+            "formula": "=+C40"
+          },
+          {
+            "celda": "E41",
+            "formula": "=CONCATENATE(A41,\" - \",B41)"
+          },
+          {
+            "celda": "F41",
+            "formula": "=+C41"
+          },
+          {
+            "celda": "E42",
+            "formula": "=CONCATENATE(A42,\" - \",B42)"
+          },
+          {
+            "celda": "F42",
+            "formula": "=+C42"
+          },
+          {
+            "celda": "E43",
+            "formula": "=CONCATENATE(A43,\" - \",B43)"
+          },
+          {
+            "celda": "F43",
+            "formula": "=+C43"
+          },
+          {
+            "celda": "E44",
+            "formula": "=CONCATENATE(A44,\" - \",B44)"
+          },
+          {
+            "celda": "F44",
+            "formula": "=+C44"
+          },
+          {
+            "celda": "E45",
+            "formula": "=CONCATENATE(A45,\" - \",B45)"
+          },
+          {
+            "celda": "F45",
+            "formula": "=+C45"
+          },
+          {
+            "celda": "E46",
+            "formula": "=CONCATENATE(A46,\" - \",B46)"
+          },
+          {
+            "celda": "F46",
+            "formula": "=+C46"
+          },
+          {
+            "celda": "E47",
+            "formula": "=CONCATENATE(A47,\" - \",B47)"
+          },
+          {
+            "celda": "F47",
+            "formula": "=+C47"
+          },
+          {
+            "celda": "E48",
+            "formula": "=CONCATENATE(A48,\" - \",B48)"
+          },
+          {
+            "celda": "F48",
+            "formula": "=+C48"
+          },
+          {
+            "celda": "E49",
+            "formula": "=CONCATENATE(A49,\" - \",B49)"
+          },
+          {
+            "celda": "F49",
+            "formula": "=+C49"
+          },
+          {
+            "celda": "E50",
+            "formula": "=CONCATENATE(A50,\" - \",B50)"
+          },
+          {
+            "celda": "F50",
+            "formula": "=+C50"
+          },
+          {
+            "celda": "E51",
+            "formula": "=CONCATENATE(A51,\" - \",B51)"
+          },
+          {
+            "celda": "F51",
+            "formula": "=+C51"
+          },
+          {
+            "celda": "E52",
+            "formula": "=CONCATENATE(A52,\" - \",B52)"
+          },
+          {
+            "celda": "F52",
+            "formula": "=+C52"
+          },
+          {
+            "celda": "E53",
+            "formula": "=CONCATENATE(A53,\" - \",B53)"
+          },
+          {
+            "celda": "F53",
+            "formula": "=+C53"
+          },
+          {
+            "celda": "E54",
+            "formula": "=CONCATENATE(A54,\" - \",B54)"
+          },
+          {
+            "celda": "F54",
+            "formula": "=+C54"
+          },
+          {
+            "celda": "E55",
+            "formula": "=CONCATENATE(A55,\" - \",B55)"
+          },
+          {
+            "celda": "F55",
+            "formula": "=+C55"
+          },
+          {
+            "celda": "E56",
+            "formula": "=CONCATENATE(A56,\" - \",B56)"
+          },
+          {
+            "celda": "F56",
+            "formula": "=+C56"
+          },
+          {
+            "celda": "E57",
+            "formula": "=CONCATENATE(A57,\" - \",B57)"
+          },
+          {
+            "celda": "F57",
+            "formula": "=+C57"
+          },
+          {
+            "celda": "E58",
+            "formula": "=CONCATENATE(A58,\" - \",B58)"
+          },
+          {
+            "celda": "F58",
+            "formula": "=+C58"
+          },
+          {
+            "celda": "E59",
+            "formula": "=CONCATENATE(A59,\" - \",B59)"
+          },
+          {
+            "celda": "F59",
+            "formula": "=+C59"
+          },
+          {
+            "celda": "E60",
+            "formula": "=CONCATENATE(A60,\" - \",B60)"
+          },
+          {
+            "celda": "F60",
+            "formula": "=+C60"
+          },
+          {
+            "celda": "E61",
+            "formula": "=CONCATENATE(A61,\" - \",B61)"
+          },
+          {
+            "celda": "F61",
+            "formula": "=+C61"
+          },
+          {
+            "celda": "E62",
+            "formula": "=CONCATENATE(A62,\" - \",B62)"
+          },
+          {
+            "celda": "F62",
+            "formula": "=+C62"
+          },
+          {
+            "celda": "E63",
+            "formula": "=CONCATENATE(A63,\" - \",B63)"
+          },
+          {
+            "celda": "F63",
+            "formula": "=+C63"
+          },
+          {
+            "celda": "E64",
+            "formula": "=CONCATENATE(A64,\" - \",B64)"
+          },
+          {
+            "celda": "F64",
+            "formula": "=+C64"
+          },
+          {
+            "celda": "E65",
+            "formula": "=CONCATENATE(A65,\" - \",B65)"
+          },
+          {
+            "celda": "F65",
+            "formula": "=+C65"
+          },
+          {
+            "celda": "E66",
+            "formula": "=CONCATENATE(A66,\" - \",B66)"
+          },
+          {
+            "celda": "F66",
+            "formula": "=+C66"
+          },
+          {
+            "celda": "E67",
+            "formula": "=CONCATENATE(A67,\" - \",B67)"
+          },
+          {
+            "celda": "F67",
+            "formula": "=+C67"
+          },
+          {
+            "celda": "E68",
+            "formula": "=CONCATENATE(A68,\" - \",B68)"
+          },
+          {
+            "celda": "F68",
+            "formula": "=+C68"
+          },
+          {
+            "celda": "E69",
+            "formula": "=CONCATENATE(A69,\" - \",B69)"
+          },
+          {
+            "celda": "F69",
+            "formula": "=+C69"
+          },
+          {
+            "celda": "E70",
+            "formula": "=CONCATENATE(A70,\" - \",B70)"
+          },
+          {
+            "celda": "F70",
+            "formula": "=+C70"
+          },
+          {
+            "celda": "E71",
+            "formula": "=CONCATENATE(A71,\" - \",B71)"
+          },
+          {
+            "celda": "F71",
+            "formula": "=+C71"
+          },
+          {
+            "celda": "E72",
+            "formula": "=CONCATENATE(A72,\" - \",B72)"
+          },
+          {
+            "celda": "F72",
+            "formula": "=+C72"
+          },
+          {
+            "celda": "E73",
+            "formula": "=CONCATENATE(A73,\" - \",B73)"
+          },
+          {
+            "celda": "F73",
+            "formula": "=+C73"
+          },
+          {
+            "celda": "E74",
+            "formula": "=CONCATENATE(A74,\" - \",B74)"
+          },
+          {
+            "celda": "F74",
+            "formula": "=+C74"
+          },
+          {
+            "celda": "E75",
+            "formula": "=CONCATENATE(A75,\" - \",B75)"
+          },
+          {
+            "celda": "F75",
+            "formula": "=+C75"
+          },
+          {
+            "celda": "E76",
+            "formula": "=CONCATENATE(A76,\" - \",B76)"
+          },
+          {
+            "celda": "F76",
+            "formula": "=+C76"
+          },
+          {
+            "celda": "E77",
+            "formula": "=CONCATENATE(A77,\" - \",B77)"
+          },
+          {
+            "celda": "F77",
+            "formula": "=+C77"
+          },
+          {
+            "celda": "E78",
+            "formula": "=CONCATENATE(A78,\" - \",B78)"
+          },
+          {
+            "celda": "F78",
+            "formula": "=+C78"
+          },
+          {
+            "celda": "E79",
+            "formula": "=CONCATENATE(A79,\" - \",B79)"
+          },
+          {
+            "celda": "F79",
+            "formula": "=+C79"
+          },
+          {
+            "celda": "E80",
+            "formula": "=CONCATENATE(A80,\" - \",B80)"
+          },
+          {
+            "celda": "F80",
+            "formula": "=+C80"
+          },
+          {
+            "celda": "E81",
+            "formula": "=CONCATENATE(A81,\" - \",B81)"
+          },
+          {
+            "celda": "F81",
+            "formula": "=+C81"
+          },
+          {
+            "celda": "E82",
+            "formula": "=CONCATENATE(A82,\" - \",B82)"
+          },
+          {
+            "celda": "F82",
+            "formula": "=+C82"
+          },
+          {
+            "celda": "E83",
+            "formula": "=CONCATENATE(A83,\" - \",B83)"
+          },
+          {
+            "celda": "F83",
+            "formula": "=+C83"
+          },
+          {
+            "celda": "E84",
+            "formula": "=CONCATENATE(A84,\" - \",B84)"
+          },
+          {
+            "celda": "F84",
+            "formula": "=+C84"
+          },
+          {
+            "celda": "E85",
+            "formula": "=CONCATENATE(A85,\" - \",B85)"
+          },
+          {
+            "celda": "F85",
+            "formula": "=+C85"
+          },
+          {
+            "celda": "E86",
+            "formula": "=CONCATENATE(A86,\" - \",B86)"
+          },
+          {
+            "celda": "F86",
+            "formula": "=+C86"
+          },
+          {
+            "celda": "E87",
+            "formula": "=CONCATENATE(A87,\" - \",B87)"
+          },
+          {
+            "celda": "F87",
+            "formula": "=+C87"
+          },
+          {
+            "celda": "E88",
+            "formula": "=CONCATENATE(A88,\" - \",B88)"
+          },
+          {
+            "celda": "F88",
+            "formula": "=+C88"
+          },
+          {
+            "celda": "E89",
+            "formula": "=CONCATENATE(A89,\" - \",B89)"
+          },
+          {
+            "celda": "F89",
+            "formula": "=+C89"
+          },
+          {
+            "celda": "E90",
+            "formula": "=CONCATENATE(A90,\" - \",B90)"
+          },
+          {
+            "celda": "F90",
+            "formula": "=+C90"
+          },
+          {
+            "celda": "E91",
+            "formula": "=CONCATENATE(A91,\" - \",B91)"
+          },
+          {
+            "celda": "F91",
+            "formula": "=+C91"
+          },
+          {
+            "celda": "E92",
+            "formula": "=CONCATENATE(A92,\" - \",B92)"
+          },
+          {
+            "celda": "F92",
+            "formula": "=+C92"
+          },
+          {
+            "celda": "E93",
+            "formula": "=CONCATENATE(A93,\" - \",B93)"
+          },
+          {
+            "celda": "F93",
+            "formula": "=+C93"
+          },
+          {
+            "celda": "E94",
+            "formula": "=CONCATENATE(A94,\" - \",B94)"
+          },
+          {
+            "celda": "F94",
+            "formula": "=+C94"
+          },
+          {
+            "celda": "E95",
+            "formula": "=CONCATENATE(A95,\" - \",B95)"
+          },
+          {
+            "celda": "F95",
+            "formula": "=+C95"
+          },
+          {
+            "celda": "E96",
+            "formula": "=CONCATENATE(A96,\" - \",B96)"
+          },
+          {
+            "celda": "F96",
+            "formula": "=+C96"
+          },
+          {
+            "celda": "E97",
+            "formula": "=CONCATENATE(A97,\" - \",B97)"
+          },
+          {
+            "celda": "F97",
+            "formula": "=+C97"
+          },
+          {
+            "celda": "E98",
+            "formula": "=CONCATENATE(A98,\" - \",B98)"
+          },
+          {
+            "celda": "F98",
+            "formula": "=+C98"
+          },
+          {
+            "celda": "E99",
+            "formula": "=CONCATENATE(A99,\" - \",B99)"
+          },
+          {
+            "celda": "F99",
+            "formula": "=+C99"
+          },
+          {
+            "celda": "E100",
+            "formula": "=CONCATENATE(A100,\" - \",B100)"
+          },
+          {
+            "celda": "F100",
+            "formula": "=+C100"
+          },
+          {
+            "celda": "E101",
+            "formula": "=CONCATENATE(A101,\" - \",B101)"
+          },
+          {
+            "celda": "F101",
+            "formula": "=+C101"
+          },
+          {
+            "celda": "E102",
+            "formula": "=CONCATENATE(A102,\" - \",B102)"
+          },
+          {
+            "celda": "F102",
+            "formula": "=+C102"
+          },
+          {
+            "celda": "E103",
+            "formula": "=CONCATENATE(A103,\" - \",B103)"
+          },
+          {
+            "celda": "F103",
+            "formula": "=+C103"
+          },
+          {
+            "celda": "E104",
+            "formula": "=CONCATENATE(A104,\" - \",B104)"
+          },
+          {
+            "celda": "F104",
+            "formula": "=+C104"
+          },
+          {
+            "celda": "E105",
+            "formula": "=CONCATENATE(A105,\" - \",B105)"
+          },
+          {
+            "celda": "F105",
+            "formula": "=+C105"
+          },
+          {
+            "celda": "E106",
+            "formula": "=CONCATENATE(A106,\" - \",B106)"
+          },
+          {
+            "celda": "F106",
+            "formula": "=+C106"
+          },
+          {
+            "celda": "E107",
+            "formula": "=CONCATENATE(A107,\" - \",B107)"
+          },
+          {
+            "celda": "F107",
+            "formula": "=+C107"
+          },
+          {
+            "celda": "E108",
+            "formula": "=CONCATENATE(A108,\" - \",B108)"
+          },
+          {
+            "celda": "F108",
+            "formula": "=+C108"
+          },
+          {
+            "celda": "E109",
+            "formula": "=CONCATENATE(A109,\" - \",B109)"
+          },
+          {
+            "celda": "F109",
+            "formula": "=+C109"
+          },
+          {
+            "celda": "E110",
+            "formula": "=CONCATENATE(A110,\" - \",B110)"
+          },
+          {
+            "celda": "F110",
+            "formula": "=+C110"
+          },
+          {
+            "celda": "E111",
+            "formula": "=CONCATENATE(A111,\" - \",B111)"
+          },
+          {
+            "celda": "E112",
+            "formula": "=CONCATENATE(A112,\" - \",B112)"
+          },
+          {
+            "celda": "E113",
+            "formula": "=CONCATENATE(A113,\" - \",B113)"
+          },
+          {
+            "celda": "E114",
+            "formula": "=CONCATENATE(A114,\" - \",B114)"
+          },
+          {
+            "celda": "E115",
+            "formula": "=CONCATENATE(A115,\" - \",B115)"
+          },
+          {
+            "celda": "E116",
+            "formula": "=CONCATENATE(A116,\" - \",B116)"
+          },
+          {
+            "celda": "E117",
+            "formula": "=CONCATENATE(A117,\" - \",B117)"
+          },
+          {
+            "celda": "E118",
+            "formula": "=CONCATENATE(A118,\" - \",B118)"
+          },
+          {
+            "celda": "E119",
+            "formula": "=CONCATENATE(A119,\" - \",B119)"
+          },
+          {
+            "celda": "E120",
+            "formula": "=CONCATENATE(A120,\" - \",B120)"
+          },
+          {
+            "celda": "E121",
+            "formula": "=CONCATENATE(A121,\" - \",B121)"
+          },
+          {
+            "celda": "E122",
+            "formula": "=CONCATENATE(A122,\" - \",B122)"
+          },
+          {
+            "celda": "E123",
+            "formula": "=CONCATENATE(A123,\" - \",B123)"
+          },
+          {
+            "celda": "E124",
+            "formula": "=CONCATENATE(A124,\" - \",B124)"
+          },
+          {
+            "celda": "E125",
+            "formula": "=CONCATENATE(A125,\" - \",B125)"
+          },
+          {
+            "celda": "E126",
+            "formula": "=CONCATENATE(A126,\" - \",B126)"
+          },
+          {
+            "celda": "E127",
+            "formula": "=CONCATENATE(A127,\" - \",B127)"
+          },
+          {
+            "celda": "E128",
+            "formula": "=CONCATENATE(A128,\" - \",B128)"
+          },
+          {
+            "celda": "E129",
+            "formula": "=CONCATENATE(A129,\" - \",B129)"
+          },
+          {
+            "celda": "E130",
+            "formula": "=CONCATENATE(A130,\" - \",B130)"
+          },
+          {
+            "celda": "E131",
+            "formula": "=CONCATENATE(A131,\" - \",B131)"
+          },
+          {
+            "celda": "E132",
+            "formula": "=CONCATENATE(A132,\" - \",B132)"
+          },
+          {
+            "celda": "E133",
+            "formula": "=CONCATENATE(A133,\" - \",B133)"
+          },
+          {
+            "celda": "E134",
+            "formula": "=CONCATENATE(A134,\" - \",B134)"
+          },
+          {
+            "celda": "E135",
+            "formula": "=CONCATENATE(A135,\" - \",B135)"
+          },
+          {
+            "celda": "E136",
+            "formula": "=CONCATENATE(A136,\" - \",B136)"
+          },
+          {
+            "celda": "E137",
+            "formula": "=CONCATENATE(A137,\" - \",B137)"
+          },
+          {
+            "celda": "E138",
+            "formula": "=CONCATENATE(A138,\" - \",B138)"
+          },
+          {
+            "celda": "E139",
+            "formula": "=CONCATENATE(A139,\" - \",B139)"
+          },
+          {
+            "celda": "E140",
+            "formula": "=CONCATENATE(A140,\" - \",B140)"
+          },
+          {
+            "celda": "E141",
+            "formula": "=CONCATENATE(A141,\" - \",B141)"
+          }
+        ],
+        "validaciones": [],
+        "combinaciones": []
+      },
+      {
+        "nombre_hoja": "Info Relevante",
+        "dimensiones": "A1:J88",
+        "rangos": {
+          "filas": "1 a 88",
+          "columnas": "1 a 10"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": [
+          {
+            "rango": "B9:E9",
+            "valor": "b. Adquisiciones, que por razones de necesidad, practicidad o urgencia resulta más factible y/o conveniente que sean efectuadas localmente por los beneficiarios directos de tales acciones vinculadas al Proyecto."
+          },
+          {
+            "rango": "G20:J20",
+            "valor": "a. Normas o disposiciones del Organismo Donante o Financiador"
+          },
+          {
+            "rango": "B15:E15",
+            "valor": "* El Responsable Técnico remitirá el formulario y los comprobantes de respaldo vía GYSDOC, dirigido al Área de Vinculación Internacional. O bien, será enviado por el Beneficiario, contando con el aval del Resp. Tecn, registrado y/o expresado dentro de la trazabilidad del trámite."
+          },
+          {
+            "rango": "B17:E18",
+            "valor": "*  Las facturas deberán ser tipo “B” o “C” a nombre de Fundación ArgenINTA, CUIT: 30-67630365-7, IVA Exento, Dirección: Av. Cerviño 3101 – 1º Piso – CP1425AGA – Ciudad de Buenos Aires. "
+          },
+          {
+            "rango": "B5:E5",
+            "valor": "Los “Reintegros” son sumas a recuperar por los beneficiarios por conceptos abonados. Estos deben ser respaldados por comprobantes."
+          },
+          {
+            "rango": "G1:J1",
+            "valor": "Reintegro de Viáticos"
+          },
+          {
+            "rango": "G22:J22",
+            "valor": "b1. Normas o Disposiciones de la Contraparte o Beneficiaria del Proyecto. Ej: Normativa INTA"
+          },
+          {
+            "rango": "G12:J12",
+            "valor": "* Se deberá:"
+          },
+          {
+            "rango": "G16:J18",
+            "valor": "* El Responsable Técnico remitirá el formulario y dococumentación de respaldo vía GYSDOC, dirigido al Área de Vinculación Internacional. O bien, será enviado por el Beneficiario, contando con el aval del Resp. Tecn., registrado y/o expresado dentro de la trazabilidad del trámite."
+          },
+          {
+            "rango": "B3:E3",
+            "valor": "* Todo gasto debe estar contemplado en el Plan de Actividades (Plan Operativo Anual, Plan de Adquisiciones, Presupuesto, etc.) vigente al momento de llevar a cabo la actividad para la cual se solicita."
+          },
+          {
+            "rango": "G8:J10",
+            "valor": "Es la asignación diaria fija que se paga para atender todos los gastos en concepto de “alojamiento y comida”, con exclusión de los gastos de movilidad y pasajes, que ocasione el desempeño de una comisión de servicio en un lugar alejado a más de cincuenta (50) kilómetros de su asiento habitual. Corresponde el pago de viáticos a toda aquella persona que desarrolle una actividad inherente al Proyecto en una localidad distinta a la de su lugar habitual de trabajo"
+          },
+          {
+            "rango": "B22:E22",
+            "valor": null
+          },
+          {
+            "rango": "G23:J23",
+            "valor": "b2. Normas o Disposiciones de la Fundación ArgenINTA (Reintegro de gastos)"
+          },
+          {
+            "rango": "B12:E12",
+            "valor": "* Se deberá:"
+          },
+          {
+            "rango": "G19:J19",
+            "valor": "* La modalidad para el pago de viáticos surge de:"
+          },
+          {
+            "rango": "B14:E14",
+            "valor": "b. Adjuntar toda la documentación respaldatoria de los gastos efectuados (facturas, constancias de pago, peajes, tickets, combustible, etc.)."
+          },
+          {
+            "rango": "G13:J13",
+            "valor": "a. Presentar la solicitud de reintegro dentro de las 72 hs. Hábiles de realizada la comisión"
+          },
+          {
+            "rango": "B1:E1",
+            "valor": "Reintegro de Fondos"
+          },
+          {
+            "rango": "B8:E8",
+            "valor": "a. Aquellas erogaciones que no se realicen a través de procedimientos específicos (combustible, peajes, etc.)."
+          },
+          {
+            "rango": "G3:J3",
+            "valor": "* Todo gasto debe estar contemplado en el Plan de Actividades (Plan Operativo Anual, Plan de Adquisiciones, Presupuesto, etc.) vigente al momento de llevar a cabo la actividad para la cual se solicita."
+          },
+          {
+            "rango": "B13:E13",
+            "valor": "a. Presentar la solicitud de reintegro dentro de las 72 hs. Hábiles de haber efectuado los gastos"
+          },
+          {
+            "rango": "G15:J15",
+            "valor": "c. En caso de corresponder se podrá solicitar un informe de actividades de la comisión realizada."
+          },
+          {
+            "rango": "B19:E19",
+            "valor": "* Se deberá enviar una solicitud por cada imputación presupuestaria de gastos definida en el Proyecto."
+          },
+          {
+            "rango": "B10:E10",
+            "valor": "* Los beneficiarios de los reintegros solo podrán ser participantes del Proyecto"
+          },
+          {
+            "rango": "G5:J5",
+            "valor": "Los “Reintegros” son sumas a recuperar por los beneficiarios por conceptos abonados. Estos deben ser respaldados por comprobantes."
+          },
+          {
+            "rango": "G14:J14",
+            "valor": "b. Adjuntar toda la documentación respaldatoria que acredite la efectiva realización de la comisión:  Boarding pass, constancias de viaje (comprobantes de gastos realizados en el lugar de la comisión por cada uno de los días de duración), FOESC, etc. "
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Informe de Actividades",
+        "dimensiones": "A1:M52",
+        "rangos": {
+          "filas": "1 a 52",
+          "columnas": "1 a 13"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": [
+          {
+            "rango": "A30:D31",
+            "valor": "Acciones realizadas en la actividad"
+          },
+          {
+            "rango": "A24:D25",
+            "valor": "Distancia Unidad INTA Sede de Personal Asistente"
+          },
+          {
+            "rango": "A35:D35",
+            "valor": "Producto del Proyecto"
+          },
+          {
+            "rango": "A48:M49",
+            "valor": null
+          },
+          {
+            "rango": "E18:M19",
+            "valor": null
+          },
+          {
+            "rango": "E34:M34",
+            "valor": null
+          },
+          {
+            "rango": "E21:M22",
+            "valor": null
+          },
+          {
+            "rango": "E12:M13",
+            "valor": null
+          },
+          {
+            "rango": "E24:M25",
+            "valor": null
+          },
+          {
+            "rango": "A27:D28",
+            "valor": "Objetivos de la Actividad"
+          },
+          {
+            "rango": "E37:M38",
+            "valor": null
+          },
+          {
+            "rango": "A34:D34",
+            "valor": "Actividad del Proyecto"
+          },
+          {
+            "rango": "A12:D13",
+            "valor": "Nombre del Proyecto "
+          },
+          {
+            "rango": "A37:D38",
+            "valor": "Resultados y Conclusiones"
+          },
+          {
+            "rango": "A18:D19",
+            "valor": "Personal Involucrado en la Actividad"
+          },
+          {
+            "rango": "A21:D22",
+            "valor": "Ubicación d la Actividad"
+          },
+          {
+            "rango": "A6:M6",
+            "valor": "Informe de Actividad"
+          },
+          {
+            "rango": "E15:M16",
+            "valor": null
+          },
+          {
+            "rango": "E33:M33",
+            "valor": null
+          },
+          {
+            "rango": "E40:M41",
+            "valor": null
+          },
+          {
+            "rango": "E27:M28",
+            "valor": null
+          },
+          {
+            "rango": "A43:M44",
+            "valor": null
+          },
+          {
+            "rango": "E30:M31",
+            "valor": null
+          },
+          {
+            "rango": "A15:D16",
+            "valor": "Fecha de realización de la actividad (Indicar fecha y hora)"
+          },
+          {
+            "rango": "A33:D33",
+            "valor": "Componente del Proyecto"
+          },
+          {
+            "rango": "E35:M35",
+            "valor": null
+          },
+          {
+            "rango": "A40:D41",
+            "valor": "Recomendaciones y Comentarios[1]:"
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Ficha Ident. Financiera",
+        "dimensiones": "A1:I41",
+        "rangos": {
+          "filas": "1 a 41",
+          "columnas": "1 a 9"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": [
+          {
+            "rango": "B25:I25",
+            "valor": null
+          },
+          {
+            "rango": "B16:I16",
+            "valor": null
+          },
+          {
+            "rango": "B22:I22",
+            "valor": null
+          },
+          {
+            "rango": "B12:I12",
+            "valor": null
+          },
+          {
+            "rango": "B18:I18",
+            "valor": null
+          },
+          {
+            "rango": "B21:I21",
+            "valor": null
+          },
+          {
+            "rango": "A35:I38",
+            "valor": null
+          },
+          {
+            "rango": "A5:I5",
+            "valor": "FICHA IDENTIFICACION FINANCIERA (1)"
+          },
+          {
+            "rango": "B11:I11",
+            "valor": null
+          },
+          {
+            "rango": "B23:I23",
+            "valor": null
+          },
+          {
+            "rango": "B17:I17",
+            "valor": null
+          },
+          {
+            "rango": "A7:I8",
+            "valor": null
+          },
+          {
+            "rango": "A1:I4",
+            "valor": null
+          },
+          {
+            "rango": "B10:I10",
+            "valor": null
+          },
+          {
+            "rango": "B19:I19",
+            "valor": null
+          },
+          {
+            "rango": "A31:I31",
+            "valor": "FIRMA DEL TITULAR DE LA CUENTA"
+          },
+          {
+            "rango": "A39:I39",
+            "valor": "(1) Se deberá adjuntar copia del extracto de cuenta o constancia de datos bancarios"
+          },
+          {
+            "rango": "A34:I34",
+            "valor": "FECHA……../……../……………"
+          },
+          {
+            "rango": "A30:I30",
+            "valor": "………………………………………………………………."
+          },
+          {
+            "rango": "B9:I9",
+            "valor": null
+          },
+          {
+            "rango": "B15:I15",
+            "valor": null
+          },
+          {
+            "rango": "B24:I24",
+            "valor": null
+          },
+          {
+            "rango": "B20:I20",
+            "valor": null
+          },
+          {
+            "rango": "A32:I33",
+            "valor": null
+          },
+          {
+            "rango": "A6:I6",
+            "valor": "(Datos para transferencia bancaria fuera de Argentina)"
+          },
+          {
+            "rango": "A26:I29",
+            "valor": null
+          },
+          {
+            "rango": "A13:I14",
+            "valor": null
+          }
+        ]
+      },
+      {
+        "nombre_hoja": "Tablas",
+        "dimensiones": "A1:E42",
+        "rangos": {
+          "filas": "1 a 42",
+          "columnas": "1 a 5"
+        },
+        "estructura": [],
+        "formulas": [],
+        "validaciones": [],
+        "combinaciones": []
+      }
+    ]
+  }
+}

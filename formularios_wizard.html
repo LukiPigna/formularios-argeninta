@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestión de Fondos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f0ede7;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem}
+.shell{width:100%;max-width:720px}
+
+/* Header */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.logo{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:#9a9892;font-family:monospace}
+.back-btn{background:none;border:none;cursor:pointer;font-size:.8rem;color:#9a9892;letter-spacing:.05em;padding:.25rem .5rem;transition:color .2s}
+.back-btn:hover{color:#0e0e0d}
+
+/* Progress */
+.progress-wrap{margin-bottom:2rem}
+.progress-label{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:#9a9892;font-family:monospace;margin-bottom:.5rem;display:flex;justify-content:space-between}
+.progress-bar{height:2px;background:#d8d5ce;border-radius:2px;position:relative}
+.progress-fill{height:100%;background:#0e0e0d;border-radius:2px;transition:width .4s ease}
+
+/* Card */
+.card{background:#fff;border-radius:12px;border:1px solid #d8d5ce;padding:2.5rem 2rem;margin-bottom:1rem}
+.step-label{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:#9a9892;font-family:monospace;margin-bottom:.75rem}
+.step-title{font-size:1.6rem;font-family:Georgia,serif;color:#0e0e0d;margin-bottom:.35rem;line-height:1.2}
+.step-sub{font-size:.88rem;color:#9a9892;margin-bottom:1.75rem;line-height:1.6}
+
+/* Form elements */
+.field{margin-bottom:1.25rem}
+.field label{display:block;font-size:.82rem;font-weight:500;color:#3a3a38;margin-bottom:.4rem}
+.field label .req{color:#c0392b;margin-left:2px}
+.field input,.field select,.field textarea{width:100%;padding:.65rem .75rem;border:1px solid #d8d5ce;border-radius:6px;font-size:.9rem;color:#0e0e0d;background:#fafaf8;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#0e0e0d;box-shadow:0 0 0 3px rgba(14,14,13,.06);background:#fff}
+.field input[readonly]{background:#f5f3ef;color:#9a9892;cursor:default}
+.field textarea{min-height:80px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.hint{font-size:.75rem;color:#9a9892;margin-top:.3rem}
+.result-positive{color:#27ae60;font-weight:600}
+.result-negative{color:#c0392b;font-weight:600}
+
+/* Toggle */
+.toggle-wrap{display:flex;align-items:center;gap:.75rem;padding:1rem;background:#f5f3ef;border-radius:8px;margin-bottom:1.25rem;cursor:pointer;user-select:none}
+.toggle{width:40px;height:22px;background:#d8d5ce;border-radius:11px;position:relative;transition:background .25s;flex-shrink:0}
+.toggle.on{background:#0e0e0d}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .25s}
+.toggle.on::after{transform:translateX(18px)}
+.toggle-label{font-size:.88rem;color:#3a3a38;font-weight:500}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:500px}
+table th{background:#0e0e0d;color:#f7f5f0;padding:.55rem .6rem;text-align:left;font-weight:500;font-size:.75rem;letter-spacing:.03em;white-space:nowrap}
+table td{border-bottom:1px solid #ede9e1;padding:.4rem .4rem}
+table tr:last-child td{border-bottom:none}
+table td input{width:100%;padding:.35rem .4rem;border:1px solid #e8e5df;border-radius:4px;font-size:.8rem;background:#fafaf8}
+table td input:focus{outline:none;border-color:#0e0e0d;background:#fff}
+.add-row{display:inline-flex;align-items:center;gap:.4rem;font-size:.78rem;color:#9a9892;border:1px dashed #d8d5ce;background:none;cursor:pointer;padding:.4rem .8rem;border-radius:6px;margin-top:.5rem;transition:all .2s}
+.add-row:hover{color:#0e0e0d;border-color:#9a9892}
+
+/* Totals */
+.totals{background:#f5f3ef;border-radius:8px;padding:1rem;margin-top:1rem}
+.totals-title{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:#9a9892;font-family:monospace;margin-bottom:.75rem}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid #e8e5df;font-size:.88rem}
+.total-row:last-child{border-bottom:none;font-weight:600;font-size:.95rem;padding-top:.5rem}
+.total-val{font-family:monospace;font-size:.9rem}
+
+/* File upload */
+.file-field{border:1.5px dashed #d8d5ce;border-radius:8px;padding:1rem 1.25rem;margin-bottom:.75rem;cursor:pointer;transition:all .2s;background:#fafaf8}
+.file-field:hover{border-color:#9a9892;background:#f5f3ef}
+.file-field label{font-size:.82rem;font-weight:500;color:#3a3a38;display:block;margin-bottom:.4rem;cursor:pointer}
+.file-field input[type=file]{font-size:.78rem;color:#9a9892;width:100%}
+.file-field .req{color:#c0392b}
+
+/* Selector screen */
+.selector{display:grid;gap:.75rem}
+.sel-card{background:#fff;border:1px solid #d8d5ce;border-radius:10px;padding:1.5rem 1.75rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
+.sel-card:hover{border-color:#0e0e0d;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.sel-card-title{font-size:1.05rem;font-family:Georgia,serif;color:#0e0e0d;margin-bottom:.2rem}
+.sel-card-sub{font-size:.8rem;color:#9a9892}
+.sel-arrow{font-size:1.2rem;color:#d8d5ce}
+
+/* Nav buttons */
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.btn-prev{background:none;border:1px solid #d8d5ce;color:#3a3a38;padding:.65rem 1.4rem;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s}
+.btn-prev:hover{border-color:#9a9892}
+.btn-next{background:#0e0e0d;color:#f7f5f0;border:none;padding:.65rem 1.6rem;border-radius:8px;font-size:.88rem;cursor:pointer;transition:opacity .2s;font-weight:500}
+.btn-next:hover{opacity:.85}
+.btn-next:disabled{opacity:.35;cursor:default}
+.btn-submit{background:#0e0e0d;color:#f7f5f0;border:none;padding:.75rem 2rem;border-radius:8px;font-size:.92rem;cursor:pointer;font-weight:500;transition:opacity .2s}
+.btn-submit:hover{opacity:.85}
+
+/* Success */
+.success{text-align:center;padding:3rem 1rem}
+.success-icon{font-size:3rem;margin-bottom:1rem}
+.success h2{font-family:Georgia,serif;font-size:1.8rem;color:#0e0e0d;margin-bottom:.75rem}
+.success p{color:#9a9892;font-size:.9rem;line-height:1.7;max-width:380px;margin:0 auto 1.5rem}
+.success .restart{background:none;border:1px solid #d8d5ce;color:#3a3a38;padding:.65rem 1.4rem;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s}
+.success .restart:hover{border-color:#9a9892}
+
+@media(max-width:560px){.row2,.row3{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <span class="logo">Unit · Gestión de Fondos</span>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <span id="user-info" style="font-size: 0.75rem; color: #9a9892;"></span>
+      <button class="back-btn" id="global-back" style="display:none" onclick="goHome()">← Cambiar formulario</button>
+      <button class="back-btn" id="logout-btn" onclick="logout()">← Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="progress-wrap" style="display:none">
+    <div class="progress-label">
+      <span id="prog-step"></span>
+      <span id="prog-pct"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div id="screen"></div>
+</div>
+
+<script type="module">
+const proyectos = {
+  'PROY001':'Fondos Nacionales de Ciencia y Técnica',
+  'PROY002':'Agencia Nacional de Promoción Científica',
+  'PROY003':'Secretaría de Políticas Universitarias',
+  'PROY004':'Consejo Nacional de Investigaciones'
+};
+
+let currentForm = null;
+let currentStep = 0;
+let formData = {};
+
+// ── Helpers ──────────────────────────────
+function $(id){ return document.getElementById(id) }
+function save(){
+  document.querySelectorAll('[data-field]').forEach(el=>{
+    formData[el.dataset.field] = el.type==='checkbox' ? el.checked : el.value;
+  });
+}
+function restore(){
+  Object.entries(formData).forEach(([k,v])=>{
+    const el = document.querySelector(`[data-field="${k}"]`);
+    if(el){ el.type==='checkbox' ? el.checked=v : el.value=v; }
+  });
+}
+function calcAutoproject(selId, inputId){
+  const sel = $(selId), inp = $(inputId);
+  if(sel && inp) sel.addEventListener('change',()=>{ inp.value = proyectos[sel.value]||''; });
+}
+function addRow(tbodyId, template){
+  const tbody = $(tbodyId);
+  const tr = document.createElement('tr');
+  tr.innerHTML = template(tbody.rows.length+1);
+  tbody.appendChild(tr);
+  recalc();
+}
+function recalc(){ /* called after adds */ }
+
+// ── Render helpers ────────────────────────
+function field(id,label,type='text',req=false,extra=''){
+  const r = req?'<span class="req">*</span>':'';
+  if(type==='textarea') return `<div class="field"><label>${label}${r}</label><textarea data-field="${id}" placeholder="${extra}"></textarea></div>`;
+  if(type==='select') return `<div class="field"><label>${label}${r}</label><select data-field="${id}">${extra}</select></div>`;
+  return `<div class="field"><label>${label}${r}</label><input type="${type}" data-field="${id}" placeholder="${extra}"></div>`;
+}
+function row2(...fields){ return `<div class="row2">${fields.join('')}</div>`; }
+function row3(...fields){ return `<div class="row3">${fields.join('')}</div>`; }
+function readonlyField(id,label){
+  return `<div class="field"><label>${label}</label><input type="text" id="${id}" readonly value="0.00"></div>`;
+}
+function fileField(id,label,req=false,accept='.pdf,.jpg,.jpeg,.png'){
+  const r = req?'<span class="req">*</span>':'';
+  return `<div class="file-field"><label>${label}${r}</label><input type="file" id="${id}" accept="${accept}"></div>`;
+}
+function toggleWrap(id,label){
+  return `<div class="toggle-wrap" onclick="toggleField('${id}')">
+    <div class="toggle" id="toggle-${id}"></div>
+    <span class="toggle-label">${label}</span>
+  </div>`;
+}
+function toggleField(id){
+  const t = $('toggle-'+id), sec = $('sec-'+id);
+  t.classList.toggle('on');
+  if(sec) sec.style.display = t.classList.contains('on') ? 'block' : 'none';
+}
+function proyOpts(prefix=''){
+  return `<option value="">Seleccionar proyecto...</option>
+    <option value="PROY001">PROY001 - Proyecto de Investigación A</option>
+    <option value="PROY002">PROY002 - Proyecto Desarrollo B</option>
+    <option value="PROY003">PROY003 - Proyecto Extensión C</option>
+    <option value="PROY004">PROY004 - Proyecto Capacitación D</option>`;
+}
+function renderStep(title,sub,body,stepN,totalSteps,label=''){
+  const pct = Math.round((stepN/totalSteps)*100);
+  $('prog-step').textContent = label || `Paso ${stepN} de ${totalSteps}`;
+  $('prog-pct').textContent = pct+'%';
+  $('progress-fill').style.width = pct+'%';
+  $('progress-wrap').style.display='block';
+  $('global-back').style.display='inline';
+  return `<div class="card">
+    <div class="step-label">Paso ${stepN} de ${totalSteps}</div>
+    <div class="step-title">${title}</div>
+    ${sub ? `<div class="step-sub">${sub}</div>` : ''}
+    ${body}
+  </div>`;
+}
+
+// ── Navigation ────────────────────────────
+function goHome(){
+  save();
+  currentForm = null; currentStep = 0;
+  $('progress-wrap').style.display='none';
+  $('global-back').style.display='none';
+  renderHome();
+}
+function next(){
+  save();
+  currentStep++;
+  renderCurrent();
+  window.scrollTo(0,0);
+}
+function prev(){
+  save();
+  currentStep--;
+  renderCurrent();
+  window.scrollTo(0,0);
+}
+function navButtons(isFirst,isLast,submitLabel='Enviar formulario'){
+  return `<div class="nav">
+    <button class="btn-prev" onclick="prev()" ${isFirst?'style="visibility:hidden"':''}>← Volver</button>
+    ${isLast
+      ? `<button class="btn-submit" onclick="submitForm()">${submitLabel}</button>`
+      : `<button class="btn-next" onclick="next()">Continuar →</button>`}
+  </div>`;
+}
+
+function renderCurrent(){
+  if(currentForm==='anticipo') renderAnticipo(currentStep);
+  else if(currentForm==='reintegro') renderReintegro(currentStep);
+  else if(currentForm==='compras') renderCompras(currentStep);
+}
+
+// ── HOME ──────────────────────────────────
+function renderHome(){
+  $('screen').innerHTML = `
+    <div class="card">
+      <div class="step-title" style="margin-bottom:.35rem">¿Qué formulario querés completar?</div>
+      <div class="step-sub">Seleccioná el tipo de solicitud y te guiamos paso a paso.</div>
+      <div class="selector">
+        <div class="sel-card" onclick="startForm('anticipo')">
+          <div><div class="sel-card-title">Solicitud de Anticipo de Fondos</div><div class="sel-card-sub">Pedido de anticipo + rendición de gastos</div></div>
+          <span class="sel-arrow">→</span>
+        </div>
+        <div class="sel-card" onclick="startForm('reintegro')">
+          <div><div class="sel-card-title">Reintegro de Gastos</div><div class="sel-card-sub">Reintegro de gastos ya realizados</div></div>
+          <span class="sel-arrow">→</span>
+        </div>
+        <div class="sel-card" onclick="startForm('compras')">
+          <div><div class="sel-card-title">Solicitud de Compras</div><div class="sel-card-sub">Solicitud de bienes, materiales o servicios</div></div>
+          <span class="sel-arrow">→</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function startForm(form){
+  currentForm = form;
+  currentStep = 1;
+  formData = {};
+  renderCurrent();
+}
+
+// ════════════════════════════════════════════
+// ANTICIPO — 5 pasos
+// ════════════════════════════════════════════
+function renderAnticipo(step){
+  const total = 5;
+  let html = '';
+
+  if(step===1){
+    html = renderStep('Datos del proyecto','Identificá el proyecto al que se imputa el gasto.',`
+      ${row2(
+        field('a_cod_proyecto','Código de Proyecto','select',true,proyOpts()),
+        field('a_fuente','Fuente de Financiamiento','text',false,'Se autocompleta')
+      )}
+      ${field('a_institucion','Institución','text',true,'Nombre de la institución')}
+      ${field('a_descripcion','Descripción de la actividad','textarea',true,'Describa la actividad a desarrollar...')}
+    `,step,total,'Datos del proyecto');
+  }
+
+  else if(step===2){
+    html = renderStep('Datos del beneficiario','Persona que recibirá el anticipo.',`
+      ${row2(
+        field('a_beneficiario','Beneficiario','text',true,'Nombre completo'),
+        field('a_cuit','CUIT/CUIL','text',true,'XX-XXXXXXXX-X')
+      )}
+      ${field('a_email','Email de contacto','email',true,'correo@ejemplo.com')}
+      ${field('a_banco','Datos bancarios','text',false,'CBU / Alias')}
+    `,step,total,'Datos del beneficiario');
+  }
+
+  else if(step===3){
+    html = renderStep('Detalle del anticipo','Ingresá los conceptos por los que se solicita el anticipo. Podés agregar filas.',`
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Concepto</th><th>Partida</th><th>Actividad</th><th>Importe Pesos</th><th>Importe USD/€</th></tr></thead>
+          <tbody id="tbody-anticipo">
+            <tr><td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcAnticipo()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcAnticipo()"></td></tr>
+            <tr><td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcAnticipo()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcAnticipo()"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row" onclick="addAnticipo()">+ Agregar fila</button>
+      <div class="totals">
+        <div class="totals-title">Totales anticipo</div>
+        <div class="total-row"><span>Total Pesos</span><span class="total-val" id="tot-a-pesos">$ 0,00</span></div>
+        <div class="total-row"><span>Total USD/Euros</span><span class="total-val" id="tot-a-usd">0,00</span></div>
+      </div>
+    `,step,total,'Detalle del anticipo');
+  }
+
+  else if(step===4){
+    html = renderStep('Rendición de gastos','Cargá los comprobantes de gastos realizados con el anticipo.',`
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Concepto</th><th>Partida</th><th>Actividad</th><th>Pesos</th><th>USD/€</th><th>Otra moneda</th><th>N° Comprobante</th><th>Fecha</th></tr></thead>
+          <tbody id="tbody-rendicion">
+            <tr><td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcRendicion()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcRendicion()"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="N°"></td><td><input type="date"></td></tr>
+            <tr><td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcRendicion()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcRendicion()"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="N°"></td><td><input type="date"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row" onclick="addRendicion()">+ Agregar fila</button>
+      <div class="totals">
+        <div class="totals-title">Comparación anticipo vs rendición</div>
+        <div class="total-row"><span>Total rendido Pesos</span><span class="total-val" id="tot-r-pesos">$ 0,00</span></div>
+        <div class="total-row"><span>Total anticipo Pesos</span><span class="total-val" id="tot-ant-ref">$ 0,00</span></div>
+        <div class="total-row"><span id="diff-label">Diferencia</span><span class="total-val" id="tot-diff">$ 0,00</span></div>
+      </div>
+      ${toggleWrap('viaticos','¿Incluye viáticos?')}
+      <div id="sec-viaticos" style="display:none">
+        ${row2(
+          field('a_origen','Origen','text',false,'Ciudad de origen'),
+          field('a_destino','Destino','text',false,'Ciudad de destino')
+        )}
+        ${row2(
+          field('a_valor_dia_pesos','Valor diario Pesos','number',false,'0.00'),
+          field('a_cantidad_dias','Cantidad de días','number',false,'0')
+        )}
+        <div class="field"><label>Liquidación viáticos Pesos</label><input type="text" id="liq-viaticos" readonly value="0.00"></div>
+        ${field('a_medio_transporte','Medio de transporte','text',false,'Avión, Auto, Bus...')}
+      </div>
+    `,step,total,'Rendición de gastos');
+  }
+
+  else if(step===5){
+    html = renderStep('Documentación y envío','Adjuntá los archivos requeridos y enviá el formulario.',`
+      ${fileField('a_constancia','Constancia de datos bancarios',true)}
+      ${fileField('a_comprobante_dev','Comprobante de transferencia (si hubo devolución)',false)}
+      <div class="field" style="margin-top:1rem"><label>Observaciones adicionales</label><textarea data-field="a_obs" placeholder="Información adicional que quieras incluir..."></textarea></div>
+    `,step,total,'Documentación y envío');
+  }
+
+  $('screen').innerHTML = html + navButtons(step===1, step===total);
+  restore();
+
+  // Listeners
+  if(step===1){
+    const sel = document.querySelector('[data-field="a_cod_proyecto"]');
+    const inp = document.querySelector('[data-field="a_fuente"]');
+    if(sel && inp){
+      inp.readOnly = true;
+      sel.addEventListener('change',()=>{ inp.value = proyectos[sel.value]||''; });
+    }
+  }
+  if(step===3) calcAnticipo();
+  if(step===4){ calcRendicion(); updateAntRef(); }
+}
+
+function addAnticipo(){
+  const tb = $('tbody-anticipo');
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcAnticipo()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcAnticipo()"></td>';
+  tb.appendChild(tr);
+}
+function addRendicion(){
+  const tb = $('tbody-rendicion');
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcRendicion()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcRendicion()"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="N°"></td><td><input type="date"></td>';
+  tb.appendChild(tr);
+}
+function calcAnticipo(){
+  let p=0,u=0;
+  document.querySelectorAll('#tbody-anticipo tr').forEach(tr=>{
+    const ins = tr.querySelectorAll('input[type=number]');
+    p += parseFloat(ins[0]?.value)||0;
+    u += parseFloat(ins[1]?.value)||0;
+  });
+  if($('tot-a-pesos')) $('tot-a-pesos').textContent = '$ '+p.toLocaleString('es-AR',{minimumFractionDigits:2});
+  if($('tot-a-usd')) $('tot-a-usd').textContent = u.toLocaleString('es-AR',{minimumFractionDigits:2});
+  formData._anticipo_pesos = p;
+}
+function updateAntRef(){
+  const ref = formData._anticipo_pesos||0;
+  if($('tot-ant-ref')) $('tot-ant-ref').textContent = '$ '+ref.toLocaleString('es-AR',{minimumFractionDigits:2});
+}
+function calcRendicion(){
+  let p=0;
+  document.querySelectorAll('#tbody-rendicion tr').forEach(tr=>{
+    const ins = tr.querySelectorAll('input[type=number]');
+    p += parseFloat(ins[0]?.value)||0;
+  });
+  if($('tot-r-pesos')) $('tot-r-pesos').textContent = '$ '+p.toLocaleString('es-AR',{minimumFractionDigits:2});
+  const ant = formData._anticipo_pesos||0;
+  const diff = p - ant;
+  const diffEl = $('tot-diff'), lbl = $('diff-label');
+  if(diffEl){
+    diffEl.textContent = '$ '+Math.abs(diff).toLocaleString('es-AR',{minimumFractionDigits:2});
+    if(diff > 0){ diffEl.className='total-val result-positive'; lbl.textContent='Complemento a pagar'; }
+    else if(diff < 0){ diffEl.className='total-val result-negative'; lbl.textContent='Devolución requerida'; }
+    else{ diffEl.className='total-val'; lbl.textContent='Diferencia'; }
+  }
+}
+
+// ════════════════════════════════════════════
+// REINTEGRO — 4 pasos
+// ════════════════════════════════════════════
+function renderReintegro(step){
+  const total = 4;
+  let html = '';
+
+  if(step===1){
+    html = renderStep('Datos del proyecto','Identificá el proyecto al que se imputa el reintegro.',`
+      ${row2(
+        field('r_cod_proyecto','Código de Proyecto','select',true,proyOpts()),
+        field('r_fuente','Fuente de Financiamiento','text',false,'Se autocompleta')
+      )}
+      ${field('r_institucion','Institución','text',true,'Nombre de la institución')}
+      ${field('r_descripcion','Descripción de la actividad','textarea',true,'Describa la actividad realizada...')}
+    `,step,total,'Datos del proyecto');
+  }
+
+  else if(step===2){
+    html = renderStep('Datos del beneficiario','Persona que recibirá el reintegro.',`
+      ${row2(
+        field('r_beneficiario','Beneficiario','text',true,'Nombre completo'),
+        field('r_cuit','CUIT/CUIL','text',true,'XX-XXXXXXXX-X')
+      )}
+      ${field('r_email','Email de contacto','email',true,'correo@ejemplo.com')}
+    `,step,total,'Datos del beneficiario');
+  }
+
+  else if(step===3){
+    html = renderStep('Detalle de gastos a reintegrar','Ingresá cada comprobante de gasto. Podés agregar filas.',`
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Concepto</th><th>Partida</th><th>Actividad</th><th>Pesos</th><th>USD/€</th><th>Otra moneda</th><th>N° Comprobante</th><th>Fecha</th></tr></thead>
+          <tbody id="tbody-gastos">
+            <tr><td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcReintegro()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcReintegro()"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="N°"></td><td><input type="date"></td></tr>
+            <tr><td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcReintegro()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcReintegro()"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="N°"></td><td><input type="date"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row" onclick="addGasto()">+ Agregar fila</button>
+      <div class="totals">
+        <div class="totals-title">Total a reintegrar</div>
+        <div class="total-row"><span>Total Pesos</span><span class="total-val result-positive" id="tot-rein-pesos">$ 0,00</span></div>
+        <div class="total-row"><span>Total USD/Euros</span><span class="total-val" id="tot-rein-usd">0,00</span></div>
+      </div>
+      ${toggleWrap('r_viaticos','¿Incluye viáticos?')}
+      <div id="sec-r_viaticos" style="display:none">
+        ${row2(
+          field('r_origen','Origen','text',false,'Ciudad de origen'),
+          field('r_destino','Destino','text',false,'Ciudad de destino')
+        )}
+        ${row2(
+          field('r_fecha_inicio','Fecha de salida','date'),
+          field('r_fecha_fin','Fecha de regreso','date')
+        )}
+        ${row2(
+          field('r_hora_inicio','Hora de salida','time'),
+          field('r_hora_fin','Hora de regreso','time')
+        )}
+        ${row2(
+          field('r_valor_dia','Valor diario Pesos','number',false,'0.00'),
+          field('r_dias','Cantidad de días','number',false,'0')
+        )}
+        <div class="field"><label>Liquidación viáticos Pesos</label><input type="text" id="liq-rein" readonly value="0.00"></div>
+        ${row2(
+          field('r_transporte','Medio de transporte','text',false,'Avión, Auto, Bus...'),
+          field('r_moneda','Moneda de pago','select',false,'<option value="ARS">Pesos Argentinos</option><option value="USD">Dólares</option><option value="EUR">Euros</option>')
+        )}
+      </div>
+    `,step,total,'Gastos a reintegrar');
+  }
+
+  else if(step===4){
+    html = renderStep('Documentación y envío','Adjuntá la constancia bancaria y enviá el formulario.',`
+      ${fileField('r_constancia','Constancia de datos bancarios',true)}
+      <div class="field" style="margin-top:1rem"><label>Observaciones adicionales</label><textarea data-field="r_obs" placeholder="Información adicional..."></textarea></div>
+    `,step,total,'Documentación y envío');
+  }
+
+  $('screen').innerHTML = html + navButtons(step===1, step===total);
+  restore();
+
+  if(step===1){
+    const sel = document.querySelector('[data-field="r_cod_proyecto"]');
+    const inp = document.querySelector('[data-field="r_fuente"]');
+    if(sel && inp){ inp.readOnly=true; sel.addEventListener('change',()=>{ inp.value=proyectos[sel.value]||''; }); }
+  }
+  if(step===3) calcReintegro();
+}
+
+function addGasto(){
+  const tb = $('tbody-gastos');
+  const tr = document.createElement('tr');
+  tr.innerHTML = '<td><input type="text" placeholder="Concepto"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcReintegro()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcReintegro()"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="N°"></td><td><input type="date"></td>';
+  tb.appendChild(tr);
+}
+function calcReintegro(){
+  let p=0,u=0;
+  document.querySelectorAll('#tbody-gastos tr').forEach(tr=>{
+    const ins = tr.querySelectorAll('input[type=number]');
+    p += parseFloat(ins[0]?.value)||0;
+    u += parseFloat(ins[1]?.value)||0;
+  });
+  if($('tot-rein-pesos')) $('tot-rein-pesos').textContent = '$ '+p.toLocaleString('es-AR',{minimumFractionDigits:2});
+  if($('tot-rein-usd')) $('tot-rein-usd').textContent = u.toLocaleString('es-AR',{minimumFractionDigits:2});
+}
+
+// ════════════════════════════════════════════
+// COMPRAS — 5 pasos
+// ════════════════════════════════════════════
+function renderCompras(step){
+  const total = 5;
+  let html = '';
+
+  if(step===1){
+    html = renderStep('Datos del proyecto','Identificá el proyecto y el solicitante.',`
+      ${row2(
+        field('c_cod_proyecto','Código de Proyecto','select',true,proyOpts()),
+        field('c_fuente','Fuente de Financiamiento','select',true,`
+          <option value="">Seleccionar...</option>
+          <option value="USDA">USDA</option><option value="FONCYT">FONCYT</option>
+          <option value="FONTAGRO">FONTAGRO</option><option value="HORIZONTE">Horizonte 2020</option><option value="OTROS">Otros</option>`)
+      )}
+      ${field('c_institucion','Institución afectada por el gasto','text',true,'Nombre de la institución')}
+      ${field('c_descripcion','Descripción de la actividad','textarea',true,'Describa la actividad a desarrollar...')}
+    `,step,total,'Datos del proyecto');
+  }
+
+  else if(step===2){
+    html = renderStep('Datos del solicitante','Persona que realiza la solicitud de compra.',`
+      ${row2(
+        field('c_nombre','Nombre del solicitante','text',true,'Nombre completo'),
+        field('c_email','Email','email',true,'correo@ejemplo.com')
+      )}
+      ${row2(
+        field('c_celular','Celular','text',false,'+54 9 11 1234-5678'),
+        field('c_fecha_solicitud','Fecha de solicitud','date',true)
+      )}
+    `,step,total,'Datos del solicitante');
+  }
+
+  else if(step===3){
+    html = renderStep('Detalle de bienes y servicios','Describí los ítems a comprar. Podés agregar filas.',`
+      <div style="font-size:.82rem;font-weight:500;color:#3a3a38;margin-bottom:.5rem">Bienes / Materiales / Insumos</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>N°</th><th>Partida</th><th>Actividad</th><th>Descripción</th><th>Cant.</th><th>Precio unit.</th><th>Total Pesos</th><th>Total M.E.</th><th>Moneda</th><th>Lugar entrega</th></tr></thead>
+          <tbody id="tbody-bienes">
+            <tr><td><input type="number" value="1" readonly style="width:36px"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="text" placeholder="Descripción"></td><td><input type="number" placeholder="0" oninput="calcBienes()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcBienes()"></td><td><input type="number" readonly placeholder="0.00"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="USD/EUR"></td><td><input type="text" placeholder="Lugar"></td></tr>
+            <tr><td><input type="number" value="2" readonly style="width:36px"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="text" placeholder="Descripción"></td><td><input type="number" placeholder="0" oninput="calcBienes()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcBienes()"></td><td><input type="number" readonly placeholder="0.00"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="USD/EUR"></td><td><input type="text" placeholder="Lugar"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="add-row" onclick="addBien()">+ Agregar fila</button>
+      <div class="totals" style="margin-top:1rem">
+        <div class="totals-title">Totales estimados</div>
+        <div class="total-row"><span>Total Bienes Pesos</span><span class="total-val" id="tot-bienes">$ 0,00</span></div>
+        <div class="total-row"><span>TOTAL GENERAL</span><span class="total-val result-positive" id="tot-general">$ 0,00</span></div>
+        <div class="total-row"><span>Modalidad de compra</span><span class="total-val" id="tipo-compra" style="font-size:.8rem;color:#9a9892">—</span></div>
+      </div>
+    `,step,total,'Bienes y servicios');
+  }
+
+  else if(step===4){
+    html = renderStep('Proveedores sugeridos','Ingresá al menos 2 cotizaciones de proveedores.',`
+      ${['1','2','3'].map((n,i)=>`
+        <div style="padding:1rem;background:#f5f3ef;border-radius:8px;margin-bottom:1rem">
+          <div style="font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:#9a9892;font-family:monospace;margin-bottom:.75rem">Proveedor ${n}${i===2?' (opcional)':' *'}</div>
+          ${field(`c_prov${n}_nombre`,'Nombre','text',i<2,'Nombre del proveedor')}
+          ${row3(
+            field(`c_prov${n}_cuit`,'CUIT','text',false,'XX-XXXXXXXX-X'),
+            field(`c_prov${n}_tel`,'Teléfono','text',false,'+54 11 ...'),
+            field(`c_prov${n}_email`,'Email','email',false,'correo@proveedor.com')
+          )}
+        </div>`).join('')}
+    `,step,total,'Proveedores');
+  }
+
+  else if(step===5){
+    html = renderStep('Documentación y envío','Adjuntá las cotizaciones y los documentos del solicitante.',`
+      ${fileField('c_dni','DNI/Pasaporte del solicitante',true)}
+      ${fileField('c_cotizacion_1','Cotización Proveedor 1',true)}
+      ${fileField('c_cotizacion_2','Cotización Proveedor 2',true)}
+      ${fileField('c_cotizacion_3','Cotización Proveedor 3 (opcional)',false)}
+      <div class="field" style="margin-top:1rem"><label>Observaciones adicionales</label><textarea data-field="c_obs" placeholder="Información adicional..."></textarea></div>
+    `,step,total,'Documentación y envío');
+  }
+
+  $('screen').innerHTML = html + navButtons(step===1, step===total);
+  restore();
+  if(step===3) calcBienes();
+}
+
+function addBien(){
+  const tb = $('tbody-bienes');
+  const n = tb.rows.length+1;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td><input type="number" value="${n}" readonly style="width:36px"></td><td><input type="text" placeholder="Partida"></td><td><input type="text" placeholder="Actividad"></td><td><input type="text" placeholder="Descripción"></td><td><input type="number" placeholder="0" oninput="calcBienes()"></td><td><input type="number" placeholder="0.00" step="0.01" oninput="calcBienes()"></td><td><input type="number" readonly placeholder="0.00"></td><td><input type="number" placeholder="0.00" step="0.01"></td><td><input type="text" placeholder="USD/EUR"></td><td><input type="text" placeholder="Lugar"></td>`;
+  tb.appendChild(tr);
+}
+function calcBienes(){
+  let total=0;
+  document.querySelectorAll('#tbody-bienes tr').forEach(tr=>{
+    const ins = tr.querySelectorAll('input[type=number]');
+    const cant = parseFloat(ins[2]?.value)||0;
+    const pu = parseFloat(ins[3]?.value)||0;
+    const sub = cant*pu;
+    if(ins[4]) ins[4].value = sub.toFixed(2);
+    total += sub;
+  });
+  if($('tot-bienes')) $('tot-bienes').textContent = '$ '+total.toLocaleString('es-AR',{minimumFractionDigits:2});
+  if($('tot-general')) $('tot-general').textContent = '$ '+total.toLocaleString('es-AR',{minimumFractionDigits:2});
+  let tipo='—';
+  if(total>0 && total<=3500000) tipo='Compra Menor';
+  else if(total<=54000000) tipo='Compra Directa';
+  else if(total<=100000000) tipo='Concurso de Precios';
+  else if(total<=270000000) tipo='Licitación Privada';
+  else if(total>270000000) tipo='Licitación Pública';
+  if($('tipo-compra')) $('tipo-compra').textContent = tipo;
+}
+
+// ── Submit ────────────────────────────────
+async function submitForm(){
+  save();
+  const webhookUrl = 'http://localhost:5678/webhook-test/formularios';
+
+  let datos = { tipo_formulario: currentForm };
+
+  if(currentForm === 'anticipo'){
+    // Capturar datos de las tablas
+    const anticipoFilas = [];
+    document.querySelectorAll('#tbody-anticipo tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      if(inputs[0].value || inputs[1].value || inputs[2].value){
+        anticipoFilas.push({
+          concepto: inputs[0].value,
+          partida: inputs[1].value,
+          actividad: inputs[2].value,
+          importe_pesos: parseFloat(inputs[3]?.value)||0,
+          importe_usd_eur: parseFloat(inputs[4]?.value)||0
+        });
+      }
+    });
+
+    const rendicionFilas = [];
+    document.querySelectorAll('#tbody-rendicion tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      if(inputs[0].value || inputs[1].value || inputs[2].value){
+        rendicionFilas.push({
+          concepto: inputs[0].value,
+          partida: inputs[1].value,
+          actividad: inputs[2].value,
+          pesos: parseFloat(inputs[3]?.value)||0,
+          usd_eur: parseFloat(inputs[4]?.value)||0,
+          otra_moneda: parseFloat(inputs[5]?.value)||0,
+          nro_comprobante: inputs[6].value,
+          fecha: inputs[7]?.value
+        });
+      }
+    });
+
+    datos.datos_generales = {
+      codigo_proyecto: formData.a_cod_proyecto,
+      fuente_financiamiento: formData.a_fuente,
+      institucion: formData.a_institucion,
+      descripcion_actividad: formData.a_descripcion,
+      beneficiario: formData.a_beneficiario,
+      cuit: formData.a_cuit,
+      email: formData.a_email,
+      datos_bancarios: formData.a_banco
+    };
+    datos.detalle_anticipo = anticipoFilas;
+    datos.rendicion_gastos = rendicionFilas;
+    datos.observaciones = formData.a_obs;
+  }
+  else if(currentForm === 'reintegro'){
+    const gastosFilas = [];
+    document.querySelectorAll('#tbody-gastos tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      if(inputs[0].value || inputs[1].value || inputs[2].value){
+        gastosFilas.push({
+          concepto: inputs[0].value,
+          partida: inputs[1].value,
+          actividad: inputs[2].value,
+          pesos: parseFloat(inputs[3]?.value)||0,
+          usd_eur: parseFloat(inputs[4]?.value)||0,
+          otra_moneda: parseFloat(inputs[5]?.value)||0,
+          nro_comprobante: inputs[6].value,
+          fecha: inputs[7]?.value
+        });
+      }
+    });
+
+    datos.datos_generales = {
+      codigo_proyecto: formData.r_cod_proyecto,
+      fuente_financiamiento: formData.r_fuente,
+      institucion: formData.r_institucion,
+      descripcion_actividad: formData.r_descripcion,
+      beneficiario: formData.r_beneficiario,
+      cuit: formData.r_cuit,
+      email: formData.r_email
+    };
+    datos.gastos = gastosFilas;
+    datos.observaciones = formData.r_obs;
+  }
+  else if(currentForm === 'compras'){
+    const bienesFilas = [];
+    document.querySelectorAll('#tbody-bienes tr').forEach(tr => {
+      const inputs = tr.querySelectorAll('input');
+      if(inputs[1].value || inputs[3].value){
+        const cant = parseFloat(inputs[4]?.value)||0;
+        const pu = parseFloat(inputs[5]?.value)||0;
+        bienesFilas.push({
+          numero: inputs[0].value,
+          partida: inputs[1].value,
+          actividad: inputs[2].value,
+          descripcion: inputs[3].value,
+          cantidad: cant,
+          precio_unitario: pu,
+          total_pesos: cant * pu,
+          total_moneda_extranjera: parseFloat(inputs[7]?.value)||0,
+          moneda: inputs[8].value,
+          lugar_entrega: inputs[9].value
+        });
+      }
+    });
+
+    datos.datos_generales = {
+      codigo_proyecto: formData.c_cod_proyecto,
+      fuente_financiamiento: formData.c_fuente,
+      institucion: formData.c_institucion,
+      descripcion_actividad: formData.c_descripcion,
+      nombre_solicitante: formData.c_nombre,
+      email_solicitante: formData.c_email,
+      celular: formData.c_celular,
+      fecha_solicitud: formData.c_fecha_solicitud
+    };
+    datos.bienes_servicios = bienesFilas;
+    datos.proveedores = [
+      { nombre: formData.c_prov1_nombre, cuit: formData.c_prov1_cuit, telefono: formData.c_prov1_tel, email: formData.c_prov1_email },
+      { nombre: formData.c_prov2_nombre, cuit: formData.c_prov2_cuit, telefono: formData.c_prov2_tel, email: formData.c_prov2_email },
+      { nombre: formData.c_prov3_nombre, cuit: formData.c_prov3_cuit, telefono: formData.c_prov3_tel, email: formData.c_prov3_email }
+    ].filter(p => p.nombre);
+    datos.observaciones = formData.c_obs;
+  }
+
+  // Mostrar estado de carga
+  $('screen').innerHTML = `
+    <div class="card" style="text-align:center;padding:3rem 1rem">
+      <div style="font-size:2rem;margin-bottom:1rem">⟳</div>
+      <h2 style="font-family:Georgia,serif;font-size:1.4rem;color:#0e0e0d;margin-bottom:.5rem">Enviando formulario...</h2>
+      <p style="color:#9a9892;font-size:.9rem">Por favor esperá un momento</p>
+    </div>`;
+
+  try {
+    const response = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
+    });
+
+    const result = await response.json();
+
+    $('progress-wrap').style.display='none';
+    $('global-back').style.display='none';
+    const labels = { anticipo:'Solicitud de Anticipo', reintegro:'Reintegro de Gastos', compras:'Solicitud de Compras' };
+
+    if(result.status === 'success'){
+      $('screen').innerHTML = `
+        <div class="card success">
+          <div class="success-icon">✓</div>
+          <h2>Formulario enviado</h2>
+          <p>Tu <strong>${labels[currentForm]}</strong> fue enviada correctamente.</p>
+          <p style="font-size:.85rem;color:#9a9892;margin-top:.5rem">ID de solicitud: <strong>${result.id_solicitud}</strong></p>
+          <button class="restart" onclick="goHome()">Completar otro formulario</button>
+        </div>`;
+    } else {
+      throw new Error(result.message || 'Error al enviar');
+    }
+  } catch(error){
+    $('screen').innerHTML = `
+      <div class="card" style="text-align:center;padding:3rem 1rem">
+        <div class="success-icon" style="color:#c0392b">✕</div>
+        <h2 style="font-family:Georgia,serif;font-size:1.4rem;color:#c0392b;margin-bottom:.75rem">Error al enviar</h2>
+        <p style="color:#9a9892;font-size:.9rem;line-height:1.6;max-width:380px;margin:0 auto 1.5rem">${error.message}</p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+          <button class="btn-prev" onclick="submitForm()">Reintentar</button>
+          <button class="restart" onclick="goHome()">Volver al inicio</button>
+        </div>
+      </div>`;
+  }
+}
+
+// ── Init ──────────────────────────────────
+renderHome();
+
+// ── Firebase Authentication ──────────────
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+// Verificar autenticación (función unificada)
+function checkAuthentication() {
+  // Primero verificar localStorage (login simple)
+  const currentUser = localStorage.getItem('currentUser');
+  if (currentUser) {
+    const user = JSON.parse(currentUser);
+    const userInfo = document.getElementById('user-info');
+    if (userInfo) {
+      userInfo.textContent = `Hola, ${user.displayName}`;
+    }
+    console.log('Usuario autenticado desde localStorage:', user.email);
+    return true;
+  }
+
+  // Si no hay localStorage, intentar Firebase
+  try {
+    const firebaseConfig = {
+      projectId: "formularios-unit-fondos",
+      appId: "1:139373040555:web:6dcc2873498131c2bf38ee",
+      storageBucket: "formularios-unit-fondos.firebasestorage.app",
+      apiKey: "AIzaSyBMUwmOW1D67shpSu-jeFpssempkH7BWI0",
+      authDomain: "formularios-unit-fondos.firebaseapp.com",
+      messagingSenderId: "139373040555",
+      projectNumber: "139373040555"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Verificar autenticación con Firebase
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.log('Usuario no autenticado en Firebase, redirigiendo al login');
+        window.location.href = 'login-simple.html';
+      } else {
+        console.log('Usuario autenticado con Firebase:', user.email);
+        const userInfo = document.getElementById('user-info');
+        if (userInfo) {
+          userInfo.textContent = `Hola, ${user.displayName}`;
+        }
+
+        // Guardar en localStorage para persistencia
+        localStorage.setItem('currentUser', JSON.stringify({
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          uid: user.uid
+        }));
+      }
+    });
+
+    // Hacer auth disponible globalmente para logout
+    window.auth = auth;
+
+  } catch (error) {
+    console.error('Error al inicializar Firebase:', error);
+    // Si Firebase falla y no hay localStorage, redirigir al login simple
+    window.location.href = 'login-simple.html';
+  }
+
+  return false;
+}
+
+// Ejecutar verificación de autenticación
+checkAuthentication();
+
+// Función para cerrar sesión
+window.logout = function() {
+  localStorage.removeItem('currentUser');
+
+  if (window.auth) {
+    signOut(window.auth).then(() => {
+      window.location.href = 'login-simple.html';
+    }).catch((error) => {
+      console.error('Error al cerrar sesión:', error);
+      window.location.href = 'login-simple.html';
+    });
+  } else {
+    window.location.href = 'login-simple.html';
+  }
+};
+</script>
+</body>
+</html>

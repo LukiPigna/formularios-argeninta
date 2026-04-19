@@ -1,0 +1,1064 @@
+================================================================================
+WORKFLOW N8N - FORMULARIOS DE GESTIÓN DE FONDOS Y COMPRAS
+================================================================================
+
+DESCRIPCION GENERAL
+-------------------
+Este workflow procesa los datos de los formularios de anticipos, reintegros y compras,
+los estructura, los guarda en archivos Excel/CSV y envía notificaciones por email.
+
+FLUJO DEL PROCESO
+-----------------
+1. Recepción de datos del formulario HTML
+2. Estructuración y validación de datos
+3. Generación de archivos Excel/CSV
+4. Envío de email con confirmación
+5. Almacenamiento en base de datos (opcional)
+
+CONFIGURACIÓN DE NODOS
+======================
+
+NODO 1: Webhook (Entrada)
+--------------------------
+Nombre: Formulario Entrada
+Tipo: Webhook
+Metodo: POST
+Path: /formularios/anticipos
+Autenticación: Ninguna (o API Key si es necesario)
+
+Respuesta esperada (JSON):
+{
+  "tipo_formulario": "anticipos" | "reintegros" | "compras",
+  "datos_generales": {
+    "codigo_proyecto": "PROY001",
+    "fuente_financiamiento": "Fondos Nacionales",
+    "institucion": "Universidad X",
+    "descripcion_actividad": "Investigación científica",
+    "beneficiario": "Juan Pérez",
+    "cuit": "20-12345678-9",
+    "email": "juan@example.com"
+  },
+  "detalle_gastos": [
+    {
+      "concepto": "Viajes",
+      "partida": "1.1.1",
+      "actividad": "Asistencia a congreso",
+      "importe_pesos": 5000.00,
+      "importe_usd_euros": 0.00,
+      "otra_moneda": 0.00,
+      "numero_comprobante": "001",
+      "fecha": "2026-04-15"
+    }
+  ],
+  "totales": {
+    "total_pesos": 5000.00,
+    "total_usd_euros": 0.00,
+    "total_otra_moneda": 0.00
+  },
+  "viaticos": {
+    "origen": "Buenos Aires",
+    "destino": "Córdoba",
+    "valor_diario_pesos": 500.00,
+    "cantidad_dias": 3,
+    "liquidacion_viaticos": 1500.00,
+    "medio_transporte": "Auto",
+    "fecha_origen": "2026-04-15",
+    "fecha_fin": "2026-04-17",
+    "hora_origen": "08:00",
+    "hora_fin": "18:00",
+    "moneda_pago": "ARS"
+  },
+  "rendicion": {
+    "monto_rendido_pesos": 4800.00,
+    "monto_rendido_usd": 0.00,
+    "complemento_pesos": 0.00,
+    "devolucion_pesos": 200.00
+  },
+  "documentos": {
+    "constancia_bancaria": "nombre_archivo.pdf"
+  },
+  "timestamp": "2026-04-15T19:30:00Z"
+}
+
+
+NODO 2: Set (Validación)
+--------------------------
+Nombre: Validar Datos
+Tipo: Set
+
+Operaciones:
+- Validar campos obligatorios
+- Formatear fechas
+- Convertir montos a formato numérico
+- Asignar ID único a la solicitud
+- Establecer fecha y hora de procesamiento
+
+Variables:
+- id_solicitud: {{$json.id_solicitud || $now.toISO()}}
+- tipo_formulario: {{$json.tipo_formulario}}
+- fecha_procesamiento: {{$now.format('DD/MM/YYYY HH:mm')}}
+- estado: "pendiente"
+
+
+NODO 3: Switch (Ruta por tipo)
+-------------------------------
+Nombre: Tipo de Formulario
+Tipo: Switch
+
+Condiciones:
+1. tipo_formulario == "anticipos" → Nodo 4 (Anticipos)
+2. tipo_formulario == "reintegros" → Nodo 5 (Reintegros)
+3. tipo_formulario == "compras" → Nodo 6 (Compras)
+4. default → Nodo 15 (Error)
+
+
+NODO 4: Function (Estructurar Anticipos)
+----------------------------------------
+Nombre: Estructurar Anticipos
+Tipo: Function
+
+Código JavaScript:
+const datos = items[0].json;
+
+const estructuraAnticipos = {
+  id_solicitud: datos.id_solicitud,
+  tipo_formulario: datos.tipo_formulario,
+  fecha_procesamiento: datos.fecha_procesamiento,
+  estado: datos.estado,
+
+  datos_generales: {
+    codigo_proyecto: datos.datos_generales.codigo_proyecto,
+    fuente_financiamiento: datos.datos_generales.fuente_financiamiento,
+    institucion: datos.datos_generales.institucion,
+    descripcion_actividad: datos.datos_generales.descripcion_actividad,
+    beneficiario: datos.datos_generales.beneficiario,
+    cuit: datos.datos_generales.cuit,
+    email: datos.datos_generales.email
+  },
+
+  detalle_anticipo: datos.detalle_gastos.map(gasto => ({
+    concepto: gasto.concepto,
+    partida: gasto.partida,
+    actividad: gasto.actividad,
+    importe_pesos: parseFloat(gasto.importe_pesos) || 0,
+    importe_usd_euros: parseFloat(gasto.importe_usd_euros) || 0
+  })),
+
+  totales_anticipo: {
+    total_pesos: parseFloat(datos.totales.total_pesos) || 0,
+    total_usd_euros: parseFloat(datos.totales.total_usd_euros) || 0
+  },
+
+  rendicion: {
+    detalle_rendicion: datos.detalle_gastos.map(gasto => ({
+      concepto: gasto.concepto,
+      partida: gasto.partida,
+      actividad: gasto.actividad,
+      importe_pesos: parseFloat(gasto.importe_pesos) || 0,
+      importe_usd_euros: parseFloat(gasto.importe_usd_euros) || 0,
+      otra_moneda: parseFloat(gasto.otra_moneda) || 0,
+      numero_comprobante: gasto.numero_comprobante,
+      fecha: gasto.fecha
+    })),
+    monto_rendido_pesos: parseFloat(datos.rendicion.monto_rendido_pesos) || 0,
+    monto_rendido_usd: parseFloat(datos.rendicion.monto_rendido_usd) || 0,
+    complemento_pesos: parseFloat(datos.rendicion.complemento_pesos) || 0,
+    devolucion_pesos: parseFloat(datos.rendicion.devolucion_pesos) || 0
+  },
+
+  viaticos: datos.viaticos ? {
+    origen: datos.viaticos.origen,
+    destino: datos.viaticos.destino,
+    valor_diario_pesos: parseFloat(datos.viaticos.valor_diario_pesos) || 0,
+    cantidad_dias: parseInt(datos.viaticos.cantidad_dias) || 0,
+    liquidacion_viaticos: parseFloat(datos.viaticos.liquidacion_viaticos) || 0,
+    medio_transporte: datos.viaticos.medio_transporte
+  } : null,
+
+  documentos: datos.documentos,
+  timestamp: datos.timestamp
+};
+
+return [{ json: estructuraAnticipos }];
+
+
+NODO 5: Function (Estructurar Reintegros)
+-----------------------------------------
+Nombre: Estructurar Reintegros
+Tipo: Function
+
+Código JavaScript:
+const datos = items[0].json;
+
+const estructuraReintegros = {
+  id_solicitud: datos.id_solicitud,
+  tipo_formulario: datos.tipo_formulario,
+  fecha_procesamiento: datos.fecha_procesamiento,
+  estado: datos.estado,
+
+  datos_generales: {
+    codigo_proyecto: datos.datos_generales.codigo_proyecto,
+    fuente_financiamiento: datos.datos_generales.fuente_financiamiento,
+    institucion: datos.datos_generales.institucion,
+    descripcion_actividad: datos.datos_generales.descripcion_actividad,
+    beneficiario: datos.datos_generales.beneficiario,
+    cuit: datos.datos_generales.cuit,
+    email: datos.datos_generales.email
+  },
+
+  detalle_gastos: datos.detalle_gastos.map(gasto => ({
+    concepto: gasto.concepto,
+    partida: gasto.partida,
+    actividad: gasto.actividad,
+    importe_pesos: parseFloat(gasto.importe_pesos) || 0,
+    importe_usd_euros: parseFloat(gasto.importe_usd_euros) || 0,
+    otra_moneda: parseFloat(gasto.otra_moneda) || 0,
+    numero_comprobante: gasto.numero_comprobante,
+    fecha: gasto.fecha
+  })),
+
+  totales_reintegro: {
+    total_pesos: parseFloat(datos.totales.total_pesos) || 0,
+    total_usd_euros: parseFloat(datos.totales.total_usd_euros) || 0,
+    total_otra_moneda: parseFloat(datos.totales.total_otra_moneda) || 0
+  },
+
+  viaticos: datos.viaticos ? {
+    origen: datos.viaticos.origen,
+    destino: datos.viaticos.destino,
+    fecha_origen: datos.viaticos.fecha_origen,
+    fecha_fin: datos.viaticos.fecha_fin,
+    hora_origen: datos.viaticos.hora_origen,
+    hora_fin: datos.viaticos.hora_fin,
+    valor_diario_pesos: parseFloat(datos.viaticos.valor_diario_pesos) || 0,
+    cantidad_dias: parseInt(datos.viaticos.cantidad_dias) || 0,
+    liquidacion_viaticos: parseFloat(datos.viaticos.liquidacion_viaticos) || 0,
+    medio_transporte: datos.viaticos.medio_transporte,
+    moneda_pago: datos.viaticos.moneda_pago
+  } : null,
+
+  documentos: datos.documentos,
+  timestamp: datos.timestamp
+};
+
+return [{ json: estructuraReintegros }];
+
+
+NODO 6: Function (Estructurar Compras)
+---------------------------------------
+Nombre: Estructurar Compras
+Tipo: Function
+
+Código JavaScript:
+const datos = items[0].json;
+
+const estructuraCompras = {
+  id_solicitud: datos.id_solicitud,
+  tipo_formulario: datos.tipo_formulario,
+  fecha_procesamiento: datos.fecha_procesamiento,
+  estado: datos.estado,
+
+  datos_generales: {
+    codigo_proyecto: datos.datos_generales.codigo_proyecto,
+    fuente_financiamiento: datos.datos_generales.fuente_financiamiento,
+    institucion: datos.datos_generales.institucion,
+    descripcion_actividad: datos.datos_generales.descripcion_actividad,
+    nombre_solicitante: datos.datos_generales.nombre_solicitante,
+    mail_solicitante: datos.datos_generales.mail_solicitante,
+    celular_solicitante: datos.datos_generales.celular_solicitante,
+    fecha_solicitud: datos.datos_generales.fecha_solicitud
+  },
+
+  detalle_bienes: datos.detalle_bienes ? datos.detalle_bienes.map(item => ({
+    numero: item.numero,
+    partida: item.partida,
+    actividad: item.actividad,
+    descripcion: item.descripcion,
+    cantidad: parseInt(item.cantidad) || 0,
+    importe_unidad: parseFloat(item.importe_unidad) || 0,
+    estimado_total_pesos: parseFloat(item.estimado_total_pesos) || 0,
+    estimado_total_moneda_extranjera: parseFloat(item.estimado_total_moneda_extranjera) || 0,
+    especificar_moneda: item.especificar_moneda,
+    lugar_entrega: item.lugar_entrega,
+    persona_contacto: item.persona_contacto,
+    observaciones: item.observaciones
+  })) : [],
+
+  proveedores_bienes: datos.proveedores_bienes || [],
+
+  detalle_servicios: datos.detalle_servicios ? datos.detalle_servicios.map(item => ({
+    numero: item.numero,
+    partida: item.partida,
+    actividad: item.actividad,
+    descripcion: item.descripcion,
+    duracion: item.duracion,
+    cantidad_pagos: item.cantidad_pagos,
+    estimado_total_pesos: parseFloat(item.estimado_total_pesos) || 0,
+    estimado_total_moneda_extranjera: parseFloat(item.estimado_total_moneda_extranjera) || 0,
+    especificar_moneda: item.especificar_moneda,
+    condicion_pago: item.condicion_pago,
+    persona_aprueba: item.persona_aprueba,
+    observaciones: item.observaciones
+  })) : [],
+
+  proveedores_servicios: datos.proveedores_servicios || [],
+
+  totales_compra: {
+    total_bienes: parseFloat(datos.totales_compra.total_bienes) || 0,
+    total_servicios: parseFloat(datos.totales_compra.total_servicios) || 0,
+    monto_total_estimado: parseFloat(datos.totales_compra.monto_total_estimado) || 0,
+    tipo_compra: datos.totales_compra.tipo_compra
+  },
+
+  documentos: datos.documentos,
+  timestamp: datos.timestamp
+};
+
+return [{ json: estructuraCompras }];
+
+
+NODO 7: Spreadsheet File (Excel Anticipos)
+-------------------------------------------
+Nombre: Generar Excel Anticipos
+Tipo: Spreadsheet File
+
+Configuración:
+- File Format: xlsx
+- Sheet Name: Anticipos
+
+Datos (Estructura plana para Excel):
+ID Solicitud, Tipo Formulario, Fecha Procesamiento, Estado,
+Código Proyecto, Fuente Financiamiento, Institución, Descripción Actividad,
+Beneficiario, CUIT, Email,
+Concepto 1, Partida 1, Actividad 1, Importe Pesos 1, Importe USD 1,
+Concepto 2, Partida 2, Actividad 2, Importe Pesos 2, Importe USD 2,
+Total Anticipo Pesos, Total Anticipo USD,
+Monto Rendido Pesos, Monto Rendido USD, Complemento Pesos, Devolución Pesos,
+Origen Viáticos, Destino Viáticos, Valor Diario, Días, Liquidación Viáticos, Medio Transporte,
+Documentos, Timestamp
+
+Nodos de entrada: Nodo 4
+
+
+NODO 8: Spreadsheet File (Excel Reintegros)
+--------------------------------------------
+Nombre: Generar Excel Reintegros
+Tipo: Spreadsheet File
+
+Configuración:
+- File Format: xlsx
+- Sheet Name: Reintegros
+
+Datos (Estructura plana para Excel):
+ID Solicitud, Tipo Formulario, Fecha Procesamiento, Estado,
+Código Proyecto, Fuente Financiamiento, Institución, Descripción Actividad,
+Beneficiario, CUIT, Email,
+Concepto 1, Partida 1, Actividad 1, Importe Pesos 1, Importe USD 1, Otra Moneda 1, Comprobante 1, Fecha 1,
+Concepto 2, Partida 2, Actividad 2, Importe Pesos 2, Importe USD 2, Otra Moneda 2, Comprobante 2, Fecha 2,
+Total Reintegrar Pesos, Total Reintegrar USD, Total Otra Moneda,
+Origen Viáticos, Destino Viáticos, Fecha Origen, Fecha Fin, Hora Origen, Hora Fin,
+Valor Diario, Días, Liquidación Viáticos, Medio Transporte, Moneda Pago,
+Documentos, Timestamp
+
+Nodos de entrada: Nodo 5
+
+
+NODO 9: Spreadsheet File (Excel Compras)
+-------------------------------------------
+Nombre: Generar Excel Compras
+Tipo: Spreadsheet File
+
+Configuración:
+- File Format: xlsx
+- Sheet Name: Compras
+
+Datos (Estructura plana para Excel):
+ID Solicitud, Tipo Formulario, Fecha Procesamiento, Estado,
+Código Proyecto, Fuente Financiamiento, Institución, Descripción Actividad,
+Nombre Solicitante, Mail Solicitante, Celular Solicitante, Fecha Solicitud,
+Item 1 N°, Item 1 Partida, Item 1 Actividad, Item 1 Descripción, Item 1 Cantidad, Item 1 Importe Unidad, Item 1 Total Pesos, Item 1 Otra Moneda, Item 1 Especificar Moneda, Item 1 Lugar Entrega, Item 1 Persona Contacto, Item 1 Observaciones,
+Item 2 N°, Item 2 Partida, Item 2 Actividad, Item 2 Descripción, Item 2 Cantidad, Item 2 Importe Unidad, Item 2 Total Pesos, Item 2 Otra Moneda, Item 2 Especificar Moneda, Item 2 Lugar Entrega, Item 2 Persona Contacto, Item 2 Observaciones,
+Proveedor Bien 1 Nombre, Proveedor Bien 1 CUIT, Proveedor Bien 1 Teléfono, Proveedor Bien 1 Email,
+Proveedor Bien 2 Nombre, Proveedor Bien 2 CUIT, Proveedor Bien 2 Teléfono, Proveedor Bien 2 Email,
+Proveedor Bien 3 Nombre, Proveedor Bien 3 CUIT, Proveedor Bien 3 Teléfono, Proveedor Bien 3 Email,
+Servicio 1 N°, Servicio 1 Partida, Servicio 1 Actividad, Servicio 1 Descripción, Servicio 1 Duración, Servicio 1 Pagos, Servicio 1 Total Pesos, Servicio 1 Otra Moneda, Servicio 1 Especificar Moneda, Servicio 1 Condición Pago, Servicio 1 Persona Aprueba, Servicio 1 Observaciones,
+Servicio 2 N°, Servicio 2 Partida, Servicio 2 Actividad, Servicio 2 Descripción, Servicio 2 Duración, Servicio 2 Pagos, Servicio 2 Total Pesos, Servicio 2 Otra Moneda, Servicio 2 Especificar Moneda, Servicio 2 Condición Pago, Servicio 2 Persona Aprueba, Servicio 2 Observaciones,
+Proveedor Servicio 1 Nombre, Proveedor Servicio 1 Teléfono, Proveedor Servicio 1 Email, Proveedor Servicio 1 Cotización,
+Proveedor Servicio 2 Nombre, Proveedor Servicio 2 Teléfono, Proveedor Servicio 2 Email, Proveedor Servicio 2 Cotización,
+Proveedor Servicio 3 Nombre, Proveedor Servicio 3 Teléfono, Proveedor Servicio 3 Email, Proveedor Servicio 3 Cotización,
+Total Bienes, Total Servicios, Monto Total Estimado, Tipo Compra,
+Documento DNI, Documento Copia DNI, Cotización 1, Cotización 2, Cotización 3,
+Timestamp
+
+Nodos de entrada: Nodo 6
+
+
+NODO 10: Write Binary File (Guardar Excel Anticipos)
+----------------------------------------------------
+Nombre: Guardar Excel Anticipos
+Tipo: Write Binary File
+
+Configuración:
+- File Name: anticipos_{{$now.format('YYYY-MM-DD_HH-mm')}}.xlsx
+- File Data: {{$binary.data}}
+
+Directorio: /n8n/formularios/archivos_excel/anticipos/
+
+
+NODO 11: Write Binary File (Guardar Excel Reintegros)
+---------------------------------------------------
+Nombre: Guardar Excel Reintegros
+Tipo: Write Binary File
+
+Configuración:
+- File Name: reintegros_{{$now.format('YYYY-MM-DD_HH-mm')}}.xlsx
+- File Data: {{$binary.data}}
+
+Directorio: /n8n/formularios/archivos_excel/reintegros/
+
+
+NODO 12: Write Binary File (Guardar Excel Compras)
+---------------------------------------------------
+Nombre: Guardar Excel Compras
+Tipo: Write Binary File
+
+Configuración:
+- File Name: compras_{{$now.format('YYYY-MM-DD_HH-mm')}}.xlsx
+- File Data: {{$binary.data}}
+
+Directorio: /n8n/formularios/archivos_excel/compras/
+
+
+NODO 13: CSV File (CSV Anticipos)
+----------------------------------
+Nombre: Generar CSV Anticipos
+Tipo: CSV File
+
+Configuración:
+- Column Name: Habilitado
+- Delimiter: ,
+
+Datos: Mismo formato que Excel pero en CSV
+
+Nodos de entrada: Nodo 4
+
+
+NODO 14: CSV File (CSV Reintegros)
+-----------------------------------
+Nombre: Generar CSV Reintegros
+Tipo: CSV File
+
+Configuración:
+- Column Name: Habilitado
+- Delimiter: ,
+
+Datos: Mismo formato que Excel pero en CSV
+
+Nodos de entrada: Nodo 5
+
+
+NODO 15: Write Binary File (Guardar CSV Anticipos)
+---------------------------------------------------
+Nombre: Guardar CSV Anticipos
+Tipo: Write Binary File
+
+Configuración:
+- File Name: anticipos_{{$now.format('YYYY-MM-DD_HH-mm')}}.csv
+- File Data: {{$binary.data}}
+
+Directorio: /n8n/formularios/archivos_csv/anticipos/
+
+
+NODO 16: Write Binary File (Guardar CSV Reintegros)
+-----------------------------------------------------
+Nombre: Guardar CSV Reintegros
+Tipo: Write Binary File
+
+Configuración:
+- File Name: reintegros_{{$now.format('YYYY-MM-DD_HH-mm')}}.csv
+- File Data: {{$binary.data}}
+
+Directorio: /n8n/formularios/archivos_csv/reintegros/
+
+
+NODO 17: CSV File (CSV Compras)
+---------------------------------
+Nombre: Generar CSV Compras
+Tipo: CSV File
+
+Configuración:
+- Column Name: Habilitado
+- Delimiter: ,
+
+Datos: Mismo formato que Excel pero en CSV
+
+Nodos de entrada: Nodo 6
+
+
+NODO 18: Write Binary File (Guardar CSV Compras)
+--------------------------------------------------
+Nombre: Guardar CSV Compras
+Tipo: Write Binary File
+
+Configuración:
+- File Name: compras_{{$now.format('YYYY-MM-DD_HH-mm')}}.csv
+- File Data: {{$binary.data}}
+
+Directorio: /n8n/formularios/archivos_csv/compras/
+
+
+NODO 19: Send Email (Notificación)
+-----------------------------------
+Nombre: Enviar Confirmación Email
+Tipo: Send Email
+
+Configuración:
+- From: formularios@tu-dominio.com
+- To: {{$json.datos_generales.email}}
+- Subject: Confirmación de Solicitud de {{$json.tipo_formulario}} - ID: {{$json.id_solicitud}}
+
+Cuerpo del Email:
+Estimado/a {{$json.datos_generales.beneficiario}},
+
+Su solicitud de {{$json.tipo_formulario}} ha sido recibida correctamente.
+
+Datos de la solicitud:
+- ID de Solicitud: {{$json.id_solicitud}}
+- Tipo de Formulario: {{$json.tipo_formulario}}
+- Fecha de Procesamiento: {{$json.fecha_procesamiento}}
+- Proyecto: {{$json.datos_generales.codigo_proyecto}}
+- Institución: {{$json.datos_generales.institucion}}
+
+Datos del Beneficiario:
+- Nombre: {{$json.datos_generales.beneficiario}}
+- CUIT/CUIL: {{$json.datos_generales.cuit}}
+- Email: {{$json.datos_generales.email}}
+
+{{#if ($json.tipo_formulario === "anticipos")}}
+Detalles del Anticipo:
+- Total Anticipo Pesos: {{$json.totales_anticipo.total_pesos}}
+- Total Anticipo USD/Euros: {{$json.totales_anticipo.total_usd_euros}}
+
+Detalles de la Rendición:
+- Monto Rendido Pesos: {{$json.rendicion.monto_rendido_pesos}}
+- Monto Rendido USD/Euros: {{$json.rendicion.monto_rendido_usd}}
+- Complemento a Pagar: {{$json.rendicion.complemento_pesos}}
+- Devolución Solicitada: {{$json.rendicion.devolucion_pesos}}
+
+{{#if ($json.viaticos)}}
+Datos de Viáticos:
+- Origen: {{$json.viaticos.origen}}
+- Destino: {{$json.viaticos.destino}}
+- Valor Diario: {{$json.viaticos.valor_diario_pesos}}
+- Cantidad de Días: {{$json.viaticos.cantidad_dias}}
+- Liquidación Total: {{$json.viaticos.liquidacion_viaticos}}
+- Medio de Transporte: {{$json.viaticos.medio_transporte}}
+{{/if}}
+
+{{else}}
+Detalles del Reintegro:
+- Total a Reintegrar Pesos: {{$json.totales_reintegro.total_pesos}}
+- Total a Reintegrar USD/Euros: {{$json.totales_reintegro.total_usd_euros}}
+
+{{#if ($json.viaticos)}}
+Datos de Viáticos:
+- Origen: {{$json.viaticos.origen}}
+- Destino: {{$json.viaticos.destino}}
+- Fechas: {{$json.viaticos.fecha_origen}} a {{$json.viaticos.fecha_fin}}
+- Valor Diario: {{$json.viaticos.valor_diario_pesos}}
+- Cantidad de Días: {{$json.viaticos.cantidad_dias}}
+- Liquidación Total: {{$json.viaticos.liquidacion_viaticos}}
+- Medio de Transporte: {{$json.viaticos.medio_transporte}}
+- Moneda de Pago: {{$json.viaticos.moneda_pago}}
+{{/if}}
+
+{{else}}
+Detalles de la Compra:
+- Total Bienes/Materiales: {{$json.totales_compra.total_bienes}}
+- Total Servicios/Consultorías: {{$json.totales_compra.total_servicios}}
+- Monto Total Estimado: {{$json.totales_compra.monto_total_estimado}}
+- Tipo de Compra: {{$json.totales_compra.tipo_compra}}
+
+{{#if ($json.detalle_bienes && $json.detalle_bienes.length > 0)}}
+Detalle de Bienes/Materiales:
+{{#each $json.detalle_bienes}}
+- Item {{$json.numero}}: {{$json.descripcion}} - Total: {{$json.estimado_total_pesos}}
+{{/each}}
+{{/if}}
+
+{{#if ($json.detalle_servicios && $json.detalle_servicios.length > 0)}}
+Detalle de Servicios/Consultorías:
+{{#each $json.detalle_servicios}}
+- Servicio {{$json.numero}}: {{$json.descripcion}} - Total: {{$json.estimado_total_pesos}}
+{{/each}}
+{{/if}}
+
+{{/if}}
+
+{{/if}}
+
+Archivos adjuntos a este correo:
+- Formulario en Excel
+- Formulario en CSV
+
+Su solicitud será procesada y recibirá una notificación cuando sea aprobada.
+
+Atentamente,
+Equipo de Gestión de Fondos
+Universidad
+
+---
+Este correo fue generado automáticamente. Por favor no responda.
+
+Adjuntos:
+- Archivo Excel: Nombre del archivo generado en Nodos 7/8/9
+- Archivo CSV: Nombre del archivo generado en Nodos 13/14/17
+
+
+NODO 20: Send Email (Notificación Error)
+------------------------------------------
+Nombre: Enviar Error Email
+Tipo: Send Email
+
+Configuración:
+- From: formularios@tu-dominio.com
+- To: admin@tu-dominio.com
+- Subject: ERROR en Procesamiento de Formulario
+
+Cuerpo del Email:
+Se ha producido un error al procesar un formulario:
+
+Datos del error:
+- Timestamp: {{$now.format('DD/MM/YYYY HH:mm')}}
+- Datos recibidos: {{$json}}
+
+
+NODO 21: Function (Actualizar Estado)
+--------------------------------------
+Nombre: Actualizar Estado Procesado
+Tipo: Function
+
+Código JavaScript:
+const datos = items[0].json;
+datos.estado = "procesado";
+datos.fecha_finalizacion = $now.format('DD/MM/YYYY HH:mm');
+return [{ json: datos }];
+
+Conectado después de: Nodos 7, 8, 9, 13, 14, 17
+
+
+NODO 22: Merge (Unificar rutas)
+--------------------------------
+Nombre: Unificar Rutas
+Tipo: Merge
+
+Modo: Append
+Conectado desde: Nodos 7, 8, 9, 13, 14, 17 → Nodos 19, 21
+
+
+CONFIGURACIÓN DE EMAIL SMTP
+============================
+
+Gmail (para desarrollo):
+- Host: smtp.gmail.com
+- Port: 587
+- Security: TLS
+- User: tu-email@gmail.com
+- Password: Tu contraseña de aplicación
+
+Office 365 (para producción):
+- Host: smtp.office365.com
+- Port: 587
+- Security: TLS
+- User: tu-email@tu-dominio.com
+- Password: Tu contraseña
+
+SMTP personalizado:
+- Configurar según proveedor de correo
+
+
+VARIABLES DE ENTORNO
+====================
+
+NODE_ENV: production
+SMTP_HOST: smtp.tu-dominio.com
+SMTP_PORT: 587
+SMTP_USER: formularios@tu-dominio.com
+SMTP_PASSWORD: tu_contraseña_segura
+WEBHOOK_BASE_URL: https://tu-servidor.com
+ARCHIVOS_BASE_PATH: /n8n/formularios/
+EMAIL_ADMIN: admin@tu-dominio.com
+
+
+INTEGRACIÓN CON FORMULARIO HTML
+================================
+
+JavaScript para enviar formulario a n8n:
+
+function enviarFormulario(formulario) {
+    let datos = {};
+
+    if (formulario === 'anticipos' || formulario === 'reintegros') {
+        // Recolectar datos del formulario de anticipos/reintegros
+        datos = {
+            tipo_formulario: formulario,
+            datos_generales: {
+                codigo_proyecto: document.getElementById('cod_proyecto_' + formulario).value,
+                fuente_financiamiento: document.getElementById('fuente_financiamiento_' + formulario).value,
+                institucion: document.getElementById('institucion_' + formulario).value,
+                descripcion_actividad: document.getElementById('descripcion_actividad_' + formulario).value,
+                beneficiario: document.getElementById('beneficiario_' + formulario).value,
+                cuit: document.getElementById('cuit_' + formulario).value,
+                email: document.getElementById('email_' + formulario).value
+            },
+            // ... continuar con otros campos específicos de anticipos/reintegros
+            timestamp: new Date().toISOString()
+        };
+    } else if (formulario === 'compras') {
+        // Recolectar datos del formulario de compras
+        datos = {
+            tipo_formulario: 'compras',
+            datos_generales: {
+                codigo_proyecto: document.getElementById('cod_proyecto_compras').value,
+                fuente_financiamiento: document.getElementById('fuente_financiamiento_compras').value,
+                institucion: document.getElementById('institucion_compras').value,
+                descripcion_actividad: document.getElementById('descripcion_actividad_compras').value,
+                nombre_solicitante: document.getElementById('nombre_solicitante').value,
+                mail_solicitante: document.getElementById('email_solicitante').value,
+                celular_solicitante: document.getElementById('celular_solicitante').value,
+                fecha_solicitud: document.getElementById('fecha_solicitud').value
+            },
+            detalle_bienes: [
+                {
+                    numero: 1,
+                    partida: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(2) input').value,
+                    actividad: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(3) input').value,
+                    descripcion: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(4) input').value,
+                    cantidad: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(5) input').value,
+                    importe_unidad: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(6) input').value,
+                    estimado_total_pesos: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(7) input').value,
+                    estimado_total_moneda_extranjera: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(8) input').value,
+                    especificar_moneda: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(9) input').value,
+                    lugar_entrega: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(10) input').value,
+                    persona_contacto: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(11) input').value,
+                    observaciones: document.querySelector('#tabla_bienes tr:nth-child(2) td:nth-child(12) input').value
+                },
+                {
+                    numero: 2,
+                    partida: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(2) input').value,
+                    actividad: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(3) input').value,
+                    descripcion: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(4) input').value,
+                    cantidad: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(5) input').value,
+                    importe_unidad: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(6) input').value,
+                    estimado_total_pesos: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(7) input').value,
+                    estimado_total_moneda_extranjera: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(8) input').value,
+                    especificar_moneda: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(9) input').value,
+                    lugar_entrega: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(10) input').value,
+                    persona_contacto: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(11) input').value,
+                    observaciones: document.querySelector('#tabla_bienes tr:nth-child(3) td:nth-child(12) input').value
+                },
+                {
+                    numero: 3,
+                    partida: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(2) input').value,
+                    actividad: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(3) input').value,
+                    descripcion: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(4) input').value,
+                    cantidad: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(5) input').value,
+                    importe_unidad: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(6) input').value,
+                    estimado_total_pesos: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(7) input').value,
+                    estimado_total_moneda_extranjera: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(8) input').value,
+                    especificar_moneda: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(9) input').value,
+                    lugar_entrega: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(10) input').value,
+                    persona_contacto: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(11) input').value,
+                    observaciones: document.querySelector('#tabla_bienes tr:nth-child(4) td:nth-child(12) input').value
+                }
+            ],
+            proveedores_bienes: [
+                {
+                    nombre: document.getElementById('prov_bien_1_nombre').value,
+                    cuit: document.getElementById('prov_bien_1_cuit').value,
+                    telefono: document.getElementById('prov_bien_1_tel').value,
+                    email: document.getElementById('prov_bien_1_email').value
+                },
+                {
+                    nombre: document.getElementById('prov_bien_2_nombre').value,
+                    cuit: document.getElementById('prov_bien_2_cuit').value,
+                    telefono: document.getElementById('prov_bien_2_tel').value,
+                    email: document.getElementById('prov_bien_2_email').value
+                },
+                {
+                    nombre: document.getElementById('prov_bien_3_nombre').value,
+                    cuit: document.getElementById('prov_bien_3_cuit').value,
+                    telefono: document.getElementById('prov_bien_3_tel').value,
+                    email: document.getElementById('prov_bien_3_email').value
+                }
+            ],
+            detalle_servicios: [
+                {
+                    numero: 1,
+                    partida: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(2) input').value,
+                    actividad: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(3) input').value,
+                    descripcion: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(4) input').value,
+                    duracion: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(5) input').value,
+                    cantidad_pagos: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(6) input').value,
+                    estimado_total_pesos: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(7) input').value,
+                    estimado_total_moneda_extranjera: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(8) input').value,
+                    especificar_moneda: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(9) input').value,
+                    condicion_pago: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(10) input').value,
+                    persona_aprueba: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(11) input').value,
+                    observaciones: document.querySelector('#tabla_servicios tr:nth-child(2) td:nth-child(12) input').value
+                },
+                {
+                    numero: 2,
+                    partida: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(2) input').value,
+                    actividad: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(3) input').value,
+                    descripcion: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(4) input').value,
+                    duracion: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(5) input').value,
+                    cantidad_pagos: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(6) input').value,
+                    estimado_total_pesos: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(7) input').value,
+                    estimado_total_moneda_extranjera: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(8) input').value,
+                    especificar_moneda: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(9) input').value,
+                    condicion_pago: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(10) input').value,
+                    persona_aprueba: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(11) input').value,
+                    observaciones: document.querySelector('#tabla_servicios tr:nth-child(3) td:nth-child(12) input').value
+                }
+            ],
+            proveedores_servicios: [
+                {
+                    nombre: document.getElementById('prov_serv_1_nombre').value,
+                    telefono: document.getElementById('prov_serv_1_tel').value,
+                    email: document.getElementById('prov_serv_1_email').value,
+                    cotizacion: document.getElementById('prov_serv_1_cotizacion').value
+                },
+                {
+                    nombre: document.getElementById('prov_serv_2_nombre').value,
+                    telefono: document.getElementById('prov_serv_2_tel').value,
+                    email: document.getElementById('prov_serv_2_email').value,
+                    cotizacion: document.getElementById('prov_serv_2_cotizacion').value
+                },
+                {
+                    nombre: document.getElementById('prov_serv_3_nombre').value,
+                    telefono: document.getElementById('prov_serv_3_tel').value,
+                    email: document.getElementById('prov_serv_3_email').value,
+                    cotizacion: document.getElementById('prov_serv_3_cotizacion').value
+                }
+            ],
+            totales_compra: {
+                total_bienes: parseFloat(document.getElementById('total_bienes').value) || 0,
+                total_servicios: parseFloat(document.getElementById('total_servicios').value) || 0,
+                monto_total_estimado: parseFloat(document.getElementById('monto_total_estimado').value) || 0,
+                tipo_compra: document.getElementById('tipo_compra').value
+            },
+            documentos: {
+                dni_solicitante: document.getElementById('dni_solicitante').value,
+                copia_dni: document.getElementById('copia_dni').value,
+                cotizacion_1: document.getElementById('cotizacion_1').value,
+                cotizacion_2: document.getElementById('cotizacion_2').value,
+                cotizacion_3: document.getElementById('cotizacion_3').value
+            },
+            timestamp: new Date().toISOString()
+        };
+    }
+
+    // Enviar a n8n
+    fetch('https://tu-servidor-n8n.com/webhook/formularios', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Formulario enviado correctamente. ID de solicitud: ' + data.id_solicitud);
+    })
+    .catch(error => {
+        alert('Error al enviar formulario: ' + error);
+    });
+}
+
+
+MODO DE USO
+===========
+
+1. Importar el JSON del workflow en n8n
+2. Configurar las credenciales de email
+3. Configurar las rutas de archivos si es necesario
+4. Activar el webhook
+5. Probar con el formulario HTML
+6. Verificar la generación de archivos Excel/CSV
+7. Verificar el envío de emails
+
+
+CARACTERÍSTICAS ADICIONALES
+============================
+
+1. Validación de datos obligatorios
+2. Formateo automático de fechas y montos
+3. Generación de ID único para cada solicitud
+4. Soporte para múltiples tipos de formularios (anticipos, reintegros, compras)
+5. Generación simultánea de Excel y CSV
+6. Notificaciones por email automáticas
+7. Manejo de errores con alertas
+8. Registro de timestamps de procesamiento
+9. Soporte para viáticos condicionales
+10. Manejo de documentos adjuntos
+11. Determinación automática de tipo de compra según monto (compra menor, directa, concurso de precios, licitación)
+12. Soporte para múltiples ítems de bienes/materiales y servicios/consultorías
+13. Gestión de proveedores sugeridos con cotizaciones
+14. Validación de documentos obligatorios (DNI, cotizaciones)
+
+
+ESTRUCTURA DE DIRECTORIOS
+=========================
+
+/n8n/formularios/
+├── archivos_excel/
+│   ├── anticipos/
+│   │   ├── anticipos_2026-04-15_19-30.xlsx
+│   │   └── anticipos_2026-04-15_20-15.xlsx
+│   ├── reintegros/
+│   │   ├── reintegros_2026-04-15_18-45.xlsx
+│   │   └── reintegros_2026-04-15_21-00.xlsx
+│   └── compras/
+│       ├── compras_2026-04-15_19-30.xlsx
+│       └── compras_2026-04-15_20-15.xlsx
+├── archivos_csv/
+│   ├── anticipos/
+│   │   ├── anticipos_2026-04-15_19-30.csv
+│   │   └── anticipos_2026-04-15_20-15.csv
+│   ├── reintegros/
+│   │   ├── reintegros_2026-04-15_18-45.csv
+│   │   └── reintegros_2026-04-15_21-00.csv
+│   └── compras/
+│       ├── compras_2026-04-15_19-30.csv
+│       └── compras_2026-04-15_20-15.csv
+└── logs/
+    ├── errores.log
+    └── procesamiento.log
+
+
+NOTAS IMPORTANTES
+=================
+
+1. Asegurar que el servidor n8n esté accesible públicamente
+2. Configurar HTTPS para el webhook en producción
+3. Implementar autenticación si se requiere seguridad adicional
+4. Configurar copias de seguridad de los archivos generados
+5. Establecer un sistema de retención de archivos antiguos
+6. Implementar monitoreo del workflow para detectar errores
+7. Configurar límites de tamaño para archivos adjuntos
+8. Establecer políticas de privacidad para los datos de los usuarios
+
+
+SOPORTE Y MANTENIMIENTO
+========================
+
+- Revisar logs de errores regularmente
+- Actualizar el workflow cuando se modifiquen los formularios
+- Probar el workflow después de cambios importantes
+- Mantener documentación actualizada
+- Realizar backups periódicos de la configuración
+
+================================================================================
+FIN DE LA DOCUMENTACIÓN N8N - ACTUALIZADO CON FORMULARIO DE COMPRAS
+================================================================================
+
+RESUMEN DE ACTUALIZACIONES
+==========================
+
+Se ha agregado soporte completo para el formulario de Solicitudes de Compras:
+
+1. NODO 6: Function (Estructurar Compras)
+   - Procesa datos de bienes/materiales y servicios/consultorías
+   - Estructura proveedores sugeridos
+   - Calcula totales y determina tipo de compra según monto
+
+2. NODO 9: Spreadsheet File (Excel Compras)
+   - Genera archivo Excel con todos los campos del formulario de compras
+   - Incluye múltiples ítems de bienes y servicios
+   - Formato compatible con el Excel original
+
+3. NODO 12: Write Binary File (Guardar Excel Compras)
+   - Guarda archivo Excel en directorio específico
+   - Naming: compras_YYYY-MM-DD_HH-mm.xlsx
+
+4. NODO 17: CSV File (CSV Compras)
+   - Genera archivo CSV con estructura plana
+   - Mismo formato que Excel pero en CSV
+
+5. NODO 18: Write Binary File (Guardar CSV Compras)
+   - Guarda archivo CSV en directorio específico
+   - Naming: compras_YYYY-MM-DD_HH-mm.csv
+
+6. Actualización de NODO 3 (Switch)
+   - Agregada condición para tipo_formulario == "compras"
+
+7. Actualización de NODO 19 (Email)
+   - Agregada plantilla para confirmación de compras
+   - Incluye resumen de bienes, servicios y tipo de compra
+
+8. Actualización de NODO 21 (Merge)
+   - Agregadas rutas de nodos de compras
+
+9. Actualización de estructura de directorios
+   - Agregadas carpetas compras/ en archivos_excel/ y archivos_csv/
+
+10. Actualización de integración HTML
+    - Código JavaScript para enviar datos del formulario de compras
+    - Recolecta todos los campos del formulario
+    - Estructura datos para procesamiento en n8n
+
+FORMULARIO DE COMPRAS - CARACTERÍSTICAS ESPECIALES
+=====================================================
+
+1. Soporte para múltiples tipos de compras:
+   - Bienes/Materiales e Insumos
+   - Servicios y Consultorías
+
+2. Gestión de proveedores:
+   - Hasta 3 proveedores sugeridos por tipo
+   - Información completa de contacto
+   - Estado de cotizaciones
+
+3. Determinación automática de tipo de compra:
+   - Compra Menor: hasta $3,500,000
+   - Compra Directa: $3,500,001 a $54,000,000
+   - Concurso de Precios: $54,000,001 a $100,000,000
+   - Licitación Privada: $100,000,001 a $270,000,000
+   - Licitación Pública: más de $270,000,000
+
+4. Documentación obligatoria:
+   - DNI/Pasaporte del solicitante
+   - Copia DNI/Pasaporte
+   - Cotizaciones de proveedores (mínimo 2 obligatorias)
+
+5. Cálculos automáticos:
+   - Subtotales por ítem (cantidad × precio unitario)
+   - Total de bienes/materiales
+   - Total de servicios/consultorías
+   - Monto total estimado
+   - Tipo de compra según monto
+
+NOTAS DE IMPLEMENTACIÓN
+=======================
+
+1. El formulario de compras es más complejo que los de anticipos/reintegros
+2. Requiere manejo de múltiples tablas anidadas (bienes y servicios)
+3. Tiene más campos obligatorios de documentación
+4. La determinación del tipo de compra es clave para el proceso
+5. Los emails de confirmación deben incluir detalles específicos del tipo de compra
+6. Los archivos generados deben mantener la estructura del Excel original
+
+PRÓXIMOS PASOS SUGERIDOS
+===============================
+
+1. Implementar validación de cotizaciones según tipo de compra
+2. Agregar soporte para anexos (Términos de Referencia y Tabla de Evaluación)
+3. Implementar workflow de aprobación específico por tipo de compra
+4. Agregar notificaciones automáticas a los proveedores sugeridos
+5. Crear reportes estadísticos de compras por período
+6. Implementar sistema de seguimiento de solicitudes de compras
+
+================================================================================
+FIN DE LA DOCUMENTACIÓN N8N - COMPLETO
+================================================================================

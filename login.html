@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Formularios Gestión de Fondos</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+        }
+        .logo-section {
+            margin-bottom: 30px;
+        }
+        .logo-section h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .logo-section p {
+            color: #666;
+            font-size: 14px;
+        }
+        .login-form {
+            margin-top: 30px;
+        }
+        .google-btn {
+            background: white;
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .google-btn:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .google-btn:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+        }
+        .info-text {
+            color: #666;
+            font-size: 13px;
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            display: none;
+        }
+        .success-message {
+            background: #efe;
+            color: #3c3;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 14px;
+            display: none;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #999;
+        }
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+        .divider span {
+            padding: 0 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <h1>Formularios Gestión de Fondos</h1>
+            <p>Sistema de gestión de fondos y solicitudes</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <div class="login-form">
+            <div id="loading" class="loading">
+                <div class="loading-spinner"></div>
+                <p>Iniciando sesión...</p>
+            </div>
+
+            <div id="login-buttons">
+                <button id="google-btn" class="google-btn" onclick="signInWithGoogle()">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    <span>Iniciar sesión con Google</span>
+                </button>
+
+                <div class="divider">
+                    <span>o</span>
+                </div>
+
+                <a href="formularios_wizard.html" class="google-btn" style="text-decoration: none;">
+                    <span>Continuar sin iniciar sesión (Demo)</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="info-text">
+            <p>Para acceder al sistema de formularios, inicia sesión con tu cuenta de Google autorizada.</p>
+            <p style="margin-top: 10px; font-size: 12px; color: #999;">Solo usuarios autorizados pueden acceder a este sistema.</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import {
+            getAuth,
+            signInWithPopup,
+            GoogleAuthProvider,
+            onAuthStateChanged,
+            signOut
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            projectId: "formularios-unit-fondos",
+            appId: "1:139373040555:web:6dcc2873498131c2bf38ee",
+            storageBucket: "formularios-unit-fondos.firebasestorage.app",
+            apiKey: "AIzaSyBMUwmOW1D67shpSu-jeFpssempkH7BWI0",
+            authDomain: "formularios-unit-fondos.firebaseapp.com",
+            messagingSenderId: "139373040555",
+            projectNumber: "139373040555"
+        };
+
+        // Inicializar Firebase
+        let app, auth, provider;
+
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            provider = new GoogleAuthProvider();
+
+            // Agregar scopes adicionales si es necesario
+            provider.addScope('email');
+            provider.addScope('profile');
+
+            console.log('Firebase inicializado correctamente');
+        } catch (error) {
+            console.error('Error al inicializar Firebase:', error);
+            showError('Error al inicializar Firebase. Por favor recarga la página.');
+        }
+
+        // Verificar si el usuario ya está autenticado
+        if (auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log('Usuario ya autenticado:', user.email);
+                    // Usuario ya autenticado, guardar datos y redirigir
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        uid: user.uid
+                    }));
+
+                    // Redirigir después de un breve momento
+                    setTimeout(() => {
+                        window.location.href = 'formularios_wizard.html';
+                    }, 500);
+                }
+            });
+        }
+
+        // Función para mostrar error
+        function showError(message) {
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+
+            const loading = document.getElementById('loading');
+            const loginButtons = document.getElementById('login-buttons');
+            const googleBtn = document.getElementById('google-btn');
+
+            if (loading) loading.style.display = 'none';
+            if (loginButtons) loginButtons.style.display = 'block';
+            if (googleBtn) googleBtn.disabled = false;
+        }
+
+        // Función para mostrar éxito
+        function showSuccess(message) {
+            const successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+            }
+        }
+
+        // Función para iniciar sesión con Google
+        window.signInWithGoogle = function() {
+            if (!auth) {
+                showError('Firebase no está inicializado correctamente.');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const loginButtons = document.getElementById('login-buttons');
+            const googleBtn = document.getElementById('google-btn');
+
+            // Mostrar estado de carga
+            if (loading) loading.style.display = 'block';
+            if (loginButtons) loginButtons.style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('success-message').style.display = 'none';
+
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // Éxito en el login
+                    const user = result.user;
+                    const credential = GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+
+                    console.log('Login exitoso:', user.email);
+                    showSuccess(`¡Bienvenido, ${user.displayName}!`);
+
+                    // Guardar información del usuario en localStorage
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        uid: user.uid,
+                        token: token
+                    }));
+
+                    // Redirigir después de un breve momento
+                    setTimeout(() => {
+                        window.location.href = 'formularios_wizard.html';
+                    }, 1500);
+                })
+                .catch((error) => {
+                    // Error en el login
+                    console.error('Error de autenticación:', error);
+                    console.error('Código de error:', error.code);
+                    console.error('Mensaje de error:', error.message);
+
+                    let errorMessageText = 'Error al iniciar sesión. ';
+
+                    switch(error.code) {
+                        case 'auth/popup-closed-by-user':
+                            errorMessageText += 'La ventana de login fue cerrada.';
+                            break;
+                        case 'auth/cancelled-popup-request':
+                            errorMessageText += 'La solicitud fue cancelada.';
+                            break;
+                        case 'auth/popup-blocked':
+                            errorMessageText += 'La ventana emergente fue bloqueada. Por favor permite las ventanas emergentes para este sitio.';
+                            break;
+                        case 'auth/unauthorized-domain':
+                            errorMessageText += 'El dominio no está autorizado. Por favor contacta al administrador.';
+                            break;
+                        case 'auth/user-disabled':
+                            errorMessageText += 'Esta cuenta de usuario ha sido deshabilitada.';
+                            break;
+                        case 'auth/invalid-api-key':
+                            errorMessageText += 'Error de configuración de la API key.';
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMessageText += 'Error de red. Por favor verifica tu conexión a internet.';
+                            break;
+                        case 'auth/internal-error':
+                            errorMessageText += 'Error interno. Por favor intenta nuevamente.';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMessageText += 'El inicio de sesión con Google no está habilitado.';
+                            break;
+                        case 'auth/account-exists-with-different-credential':
+                            errorMessageText += 'Ya existe una cuenta con este correo electrónico usando otro método de inicio de sesión.';
+                            break;
+                        case 'auth/auth-domain-config-required':
+                            errorMessageText += 'Falta la configuración del dominio de autenticación.';
+                            break;
+                        default:
+                            errorMessageText += `${error.message} (${error.code})`;
+                    }
+
+                    showError(errorMessageText);
+                });
+        };
+
+        // Hacer las funciones disponibles globalmente
+        window.signOut = function() {
+            if (auth) {
+                signOut(auth).then(() => {
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html';
+                }).catch((error) => {
+                    console.error('Error al cerrar sesión:', error);
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html';
+                });
+            }
+        };
+    </script>
+</body>
+</html>
