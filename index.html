@@ -62,6 +62,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Ar
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
 .result-positive{color:#059669;font-weight:600}
 .result-negative{color:#dc2626;font-weight:600}
+.input-error{border-color:#dc2626 !important;box-shadow:0 0 0 3px rgba(220,38,38,.1) !important}
+.error-msg{font-size:.73rem;color:#dc2626;margin-top:.25rem}
 
 /* ── Toggle ── */
 .toggle-wrap{display:flex;align-items:center;gap:.75rem;padding:.85rem 1rem;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;margin-bottom:1.1rem;cursor:pointer;user-select:none}
@@ -262,15 +264,17 @@ function restore(){
 
 function field(id,label,type='text',req=false,extra=''){
   const r = req?'<span class="req">*</span>':'';
-  if(type==='textarea') return `<div class="field"><label>${label}${r}</label><textarea data-field="${id}" placeholder="${extra}"></textarea></div>`;
-  if(type==='select') return `<div class="field"><label>${label}${r}</label><select data-field="${id}">${extra}</select></div>`;
-  return `<div class="field"><label>${label}${r}</label><input type="${type}" data-field="${id}" placeholder="${extra}"></div>`;
+  const rAttr = req?' data-required="true"':'';
+  if(type==='textarea') return `<div class="field"><label>${label}${r}</label><textarea data-field="${id}"${rAttr} placeholder="${extra}"></textarea></div>`;
+  if(type==='select') return `<div class="field"><label>${label}${r}</label><select data-field="${id}"${rAttr}>${extra}</select></div>`;
+  return `<div class="field"><label>${label}${r}</label><input type="${type}" data-field="${id}"${rAttr} placeholder="${extra}"></div>`;
 }
 function row2(...fields){ return `<div class="row2">${fields.join('')}</div>`; }
 function row3(...fields){ return `<div class="row3">${fields.join('')}</div>`; }
 function fileField(id,label,req=false,accept='.pdf,.jpg,.jpeg,.png'){
   const r = req?'<span class="req">*</span>':'';
-  return `<div class="file-field"><label>${label}${r}</label><input type="file" id="${id}" accept="${accept}"></div>`;
+  const rAttr = req?' data-required="true"':'';
+  return `<div class="file-field"><label>${label}${r}</label><input type="file" id="${id}"${rAttr} accept="${accept}"></div>`;
 }
 function toggleWrap(id,label){
   return `<div class="toggle-wrap" onclick="toggleField('${id}')">
@@ -320,7 +324,32 @@ function goHome(){
   $('global-back').style.display='none';
   renderHome();
 }
-function next(){ save(); currentStep++; renderCurrent(); window.scrollTo(0,0); }
+function validateStep(){
+  let valid = true;
+  document.querySelectorAll('[data-required]').forEach(el=>{
+    const val = el.type==='file' ? el.files.length>0 : el.value.trim()!=='';
+    const container = el.closest('.field') || el.closest('.file-field');
+    if(!val){
+      valid = false;
+      el.classList.add('input-error');
+      if(container && !container.querySelector('.error-msg')){
+        const msg = document.createElement('div');
+        msg.className = 'error-msg';
+        msg.textContent = 'Este campo es obligatorio';
+        container.appendChild(msg);
+      }
+    } else {
+      el.classList.remove('input-error');
+      if(container){ const m=container.querySelector('.error-msg'); if(m) m.remove(); }
+    }
+  });
+  if(!valid){
+    const first = document.querySelector('.input-error');
+    if(first) first.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return valid;
+}
+function next(){ save(); if(!validateStep()) return; currentStep++; renderCurrent(); window.scrollTo(0,0); }
 function prev(){ save(); currentStep--; renderCurrent(); window.scrollTo(0,0); }
 
 function navButtons(isFirst,isLast,submitLabel='Enviar formulario'){
@@ -737,6 +766,7 @@ function calcBienes(){
 // ── Submit ──
 async function submitForm(){
   save();
+  if(!validateStep()) return;
   const webhookUrl = 'http://localhost:5678/webhook-test/formularios';
 
   let datos = { tipo_formulario: currentForm };
